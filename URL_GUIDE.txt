@@ -10,7 +10,7 @@ original and corrected text. It accepts data via a single URL parameter.
 
 URL STRUCTURE
 -------------
-https://your-app.github.app/?data=<BASE64_ENCODED_DATA>
+https://grammar-correction--rohanod.github.app/?data=<BASE64_ENCODED_DATA>
 
 Single required URL parameter:
   data - Base64-encoded JSON containing all correction information
@@ -96,7 +96,7 @@ const encoded = btoa(encodeURIComponent(jsonString).replace(
 ))
 
 Step 4: Create URL
-const url = `https://your-app.github.app/?data=${encoded}`
+const url = `https://grammar-correction--rohanod.github.app/?data=${encoded}`
 
 
 JAVASCRIPT EXAMPLE (COMPLETE)
@@ -111,7 +111,7 @@ function generateCorrectionURL(data) {
       (_, p1) => String.fromCharCode(parseInt(p1, 16))
     )
   )
-  return `https://your-app.github.app/?data=${encoded}`
+  return `https://grammar-correction--rohanod.github.app/?data=${encoded}`
 }
 
 // Usage
@@ -158,7 +158,7 @@ def generate_correction_url(data):
     """Generate a correction URL from data object"""
     json_string = json.dumps(data)
     encoded = base64.b64encode(json_string.encode('utf-8')).decode('ascii')
-    return f"https://your-app.github.app/?data={encoded}"
+    return f"https://grammar-correction--rohanod.github.app/?data={encoded}"
 
 # Usage
 correction_data = {
