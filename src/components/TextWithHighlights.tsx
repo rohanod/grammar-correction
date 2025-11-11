@@ -7,6 +7,7 @@ import { ArrowRight } from '@phosphor-icons/react'
 interface TextWithHighlightsProps {
   text: string
   corrections: Correction[]
+  showCorrected: boolean
 }
 
 function getCorrectionColor(type: CorrectionType): string {
@@ -39,7 +40,7 @@ function getCorrectionBadgeColor(type: CorrectionType): string {
   }
 }
 
-export function TextWithHighlights({ text, corrections }: TextWithHighlightsProps) {
+export function TextWithHighlights({ text, corrections, showCorrected }: TextWithHighlightsProps) {
   const words = text.split(/(\s+)/)
   let currentPosition = 0
   const elements: React.ReactElement[] = []
@@ -49,7 +50,8 @@ export function TextWithHighlights({ text, corrections }: TextWithHighlightsProp
     const wordEnd = currentPosition + word.length
     
     const correctionInRange = corrections.find(c => {
-      return c.position >= wordStart && c.position < wordEnd && word.includes(c.corrected)
+      const searchTerm = showCorrected ? c.corrected : c.original
+      return c.position >= wordStart && c.position < wordEnd && word.includes(searchTerm)
     })
 
     if (correctionInRange) {

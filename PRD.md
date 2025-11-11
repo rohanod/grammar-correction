@@ -19,12 +19,12 @@ A web application that displays grammar corrections at the word and symbol level
 - **Progression**: Load page → Parse URL params → Decode correction data → Render comparison view
 - **Success criteria**: Correctly handles encoded text and displays all corrections accurately
 
-### Word-Level Diff Display
-- **Functionality**: Show original vs corrected text with word-by-word highlighting
-- **Purpose**: Make it immediately obvious what changed between versions
-- **Trigger**: Successful parsing of correction data
-- **Progression**: Process corrections → Map to original text → Apply visual styles → Display inline
-- **Success criteria**: All changes are visible with clear color coding and smooth transitions
+### Word-Level Diff Display with Toggle
+- **Functionality**: Show original or corrected text with word-by-word highlighting and ability to toggle between views
+- **Purpose**: Allow users to compare original mistakes with corrections by switching views
+- **Trigger**: Successful parsing of correction data, button click to toggle
+- **Progression**: Display original text by default → User clicks toggle → Switch to corrected view → Highlights remain interactive → Click again to return to original
+- **Success criteria**: Seamless toggling between views with all changes visible and clear color coding
 
 ### Interactive Correction Details
 - **Functionality**: Click or hover on corrections to see detailed information
@@ -88,7 +88,8 @@ Subtle and purposeful animations that guide attention to corrections without bei
 
 - **Components**: 
   - Card for main content containers with subtle shadows
-  - Badge for correction type labels (deletion, addition, replacement)
+  - Badge for correction type labels and correction count
+  - Button for toggling between original and corrected views
   - Tooltip/Popover for detailed correction information
   - Alert for error states and empty states
   - Separator for visual division between sections
@@ -100,14 +101,16 @@ Subtle and purposeful animations that guide attention to corrections without bei
   - Gradient backgrounds using the blue color scheme
   
 - **States**: 
-  - Buttons: Soft shadow on hover, subtle scale on press
+  - Buttons: Soft shadow on hover, subtle scale on press, variant changes based on active view
   - Corrections: Highlighted background on hover, tooltip on interaction
   - Cards: Subtle lift effect with shadow transition
+  - Toggle: Clear visual indication of which view is active
   
 - **Icon Selection**: 
-  - Check (for correct text)
+  - Check (for correct text and correction count)
   - Warning (for errors)
-  - ArrowRight (for showing progression)
+  - ArrowRight (for showing progression in tooltips)
+  - ArrowsClockwise (for toggle button)
   - Info (for help/instructions)
   
 - **Spacing**: 

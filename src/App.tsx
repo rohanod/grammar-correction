@@ -3,16 +3,18 @@ import { EmptyState } from '@/components/EmptyState'
 import { TextWithHighlights } from '@/components/TextWithHighlights'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { parseCorrectionFromURL } from '@/lib/correction-parser'
 import { CorrectionData } from '@/lib/types'
-import { Warning, CheckCircle } from '@phosphor-icons/react'
+import { Warning, CheckCircle, ArrowsClockwise } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
 function App() {
   const [correctionData, setCorrectionData] = useState<CorrectionData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showCorrected, setShowCorrected] = useState(false)
 
   useEffect(() => {
     try {
@@ -74,13 +76,25 @@ function App() {
                 Grammar Correction
               </h1>
               <p className="text-base md:text-lg text-muted-foreground">
-                Hover over highlighted words to see corrections
+                {showCorrected 
+                  ? 'Viewing corrected text - hover over highlights to see changes'
+                  : 'Viewing original text - hover over highlights to see corrections'}
               </p>
             </div>
-            <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm">
-              <CheckCircle size={18} weight="bold" className="mr-2" />
-              {correctionData.corrections.length} {correctionData.corrections.length === 1 ? 'correction' : 'corrections'}
-            </Badge>
+            <div className="flex items-center gap-3">
+              <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm">
+                <CheckCircle size={18} weight="bold" className="mr-2" />
+                {correctionData.corrections.length} {correctionData.corrections.length === 1 ? 'correction' : 'corrections'}
+              </Badge>
+              <Button 
+                onClick={() => setShowCorrected(!showCorrected)}
+                className="gap-2"
+                variant={showCorrected ? "secondary" : "default"}
+              >
+                <ArrowsClockwise size={18} weight="bold" />
+                {showCorrected ? 'Show Original' : 'Show Corrected'}
+              </Button>
+            </div>
           </div>
         </motion.div>
 
@@ -91,8 +105,9 @@ function App() {
         >
           <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10">
             <TextWithHighlights 
-              text={correctionData.corrected} 
-              corrections={correctionData.corrections} 
+              text={showCorrected ? correctionData.corrected : correctionData.original}
+              corrections={correctionData.corrections}
+              showCorrected={showCorrected}
             />
           </Card>
         </motion.div>
