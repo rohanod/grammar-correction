@@ -10,7 +10,7 @@ original and corrected text. It accepts data via URL parameters.
 
 URL STRUCTURE
 -------------
-https://your-app-url.com/?original=<TEXT>&corrections=<JSON_DATA>
+https://grammar-correction--rohanod.github.app/?original=<TEXT>&corrections=<JSON_DATA>
 
 Two required URL parameters:
 1. original  - The original text with errors
@@ -143,7 +143,7 @@ const params = new URLSearchParams({
 });
 
 // Generate full URL
-const url = `https://your-app.com/?${params.toString()}`;
+const url = `https://grammar-correction--rohanod.github.app/?${params.toString()}`;
 
 
 PYTHON EXAMPLE: GENERATING A URL
@@ -181,7 +181,7 @@ params = {
 }
 
 # Generate full URL
-url = f"https://your-app.com/?{urlencode(params)}"
+url = f"https://grammar-correction--rohanod.github.app/?{urlencode(params)}"
 
 
 FINDING CHARACTER POSITIONS
