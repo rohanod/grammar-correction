@@ -1,7 +1,39 @@
 import { CorrectionData } from './types'
 
+function base64Decode(str: string): string {
+  try {
+    return decodeURIComponent(atob(str).split('').map(c => 
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join(''))
+  } catch {
+    return atob(str)
+  }
+}
+
+function base64Encode(str: string): string {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+    String.fromCharCode(parseInt(p1, 16))
+  ))
+}
+
 export function parseCorrectionFromURL(): CorrectionData | null {
   const params = new URLSearchParams(window.location.search)
+  
+  const data = params.get('data')
+  if (data) {
+    try {
+      const decoded = base64Decode(data)
+      const parsed = JSON.parse(decoded)
+      return {
+        original: parsed.original || '',
+        corrected: parsed.corrected || '',
+        corrections: parsed.corrections || []
+      }
+    } catch (error) {
+      console.error('Failed to parse data parameter:', error)
+    }
+  }
+  
   const original = params.get('original')
   const correctionsParam = params.get('corrections')
   
@@ -22,18 +54,17 @@ export function parseCorrectionFromURL(): CorrectionData | null {
   }
 }
 
+export function generateCorrectionURL(data: CorrectionData): string {
+  const encoded = base64Encode(JSON.stringify(data))
+  const params = new URLSearchParams({ data: encoded })
+  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
+}
+
 export function generateExampleURL(): string {
-  const original = "helo world! This are a example of grammer corrections"
-  const correctionData = {
+  const correctionData: CorrectionData = {
+    original: "helo world! This are a example of grammer corrections",
     corrected: "Hello world! This is an example of grammar corrections.",
     corrections: [
-      {
-        type: "capitalization",
-        original: "helo",
-        corrected: "Hello",
-        position: 0,
-        reason: "First word of sentence should be capitalized"
-      },
       {
         type: "spelling",
         original: "helo",
@@ -72,10 +103,5 @@ export function generateExampleURL(): string {
     ]
   }
   
-  const params = new URLSearchParams({
-    original: encodeURIComponent(original),
-    corrections: encodeURIComponent(JSON.stringify(correctionData))
-  })
-  
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
+  return generateCorrectionURL(correctionData)
 }
