@@ -79,24 +79,11 @@ function App() {
                 >
                   Corrected
                 </button>
-                <motion.div
-                  className="absolute top-1 bottom-1 bg-primary rounded-full shadow-lg"
-                  initial={false}
-                  animate={{
+                <div
+                  className="absolute top-1 bottom-1 bg-primary rounded-full shadow-lg transition-all duration-200"
+                  style={{
                     left: showCorrected ? '50%' : '0.25rem',
                     right: showCorrected ? '0.25rem' : '50%',
-                    scale: showCorrected ? [1, 1.08, 1] : [1, 1.08, 1],
-                  }}
-                  transition={{ 
-                    type: 'spring', 
-                    stiffness: 400, 
-                    damping: 18,
-                    mass: 0.8,
-                    scale: {
-                      duration: 0.3,
-                      times: [0, 0.5, 1],
-                      ease: "easeOut"
-                    }
                   }}
                 />
               </div>
