@@ -100,7 +100,8 @@ function App() {
           className="mt-4 md:mt-6 text-center"
         >
           <p className="text-xs md:text-sm text-muted-foreground">
-            {showCorrected ? 'Tap' : 'Tap'} highlighted words on mobile or hover on desktop to see corrections
+            <span className="md:hidden">Tap highlighted words to see correction details</span>
+            <span className="hidden md:inline">Hover over highlighted words to see correction details</span>
           </p>
         </motion.div>
       </div>
