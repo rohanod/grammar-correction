@@ -2,7 +2,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { Correction, CorrectionType } from '@/lib/types'
-import { motion } from 'framer-motion'
 import { ArrowRight } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -14,18 +13,17 @@ interface TextWithHighlightsProps {
 }
 
 function getCorrectionColor(type: CorrectionType, isMobile: boolean): string {
-  const hoverClass = isMobile ? '' : 'md:hover:bg-opacity-50'
   switch (type) {
     case 'addition':
-      return `bg-green-400/30 ${hoverClass} border-b-2 border-green-500`
+      return `bg-green-400/30 border-b-2 border-green-500`
     case 'deletion':
-      return `bg-red-400/30 ${hoverClass} border-b-2 border-red-500`
+      return `bg-red-400/30 border-b-2 border-red-500`
     case 'replacement':
-      return `bg-primary/30 ${hoverClass} border-b-2 border-primary`
+      return `bg-primary/30 border-b-2 border-primary`
     case 'punctuation':
-      return `bg-secondary/30 ${hoverClass} border-b-2 border-secondary`
+      return `bg-secondary/30 border-b-2 border-secondary`
     default:
-      return `bg-muted/30 ${hoverClass}`
+      return `bg-muted/30`
   }
 }
 
@@ -103,12 +101,7 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
   }
 
   const correctionContent = (
-    <motion.div 
-      className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden"
-      initial={{ opacity: 0, scale: 0.9, y: -10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-    >
+    <div className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden">
       <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
         <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[calc(var(--radius)*0.75)] text-xs`}>
           {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)}
@@ -141,19 +134,18 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   )
 
   if (isMobile) {
     return (
       <>
-        <motion.span
+        <span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
-          whileTap={{ scale: 0.92, rotate: -2 }}
           onClick={handleClick}
         >
           {word}
-        </motion.span>
+        </span>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-md rounded-[calc(var(--radius)*1.5)] p-0 gap-0">
             <DialogHeader className="sr-only">
@@ -169,16 +161,14 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <motion.span
+        <span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
-          whileHover={{ scale: 1.05, y: -2 }}
-          whileTap={{ scale: 0.95 }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}
         >
           {word}
-        </motion.span>
+        </span>
       </PopoverTrigger>
       <PopoverContent 
         className="w-[calc(100vw-2rem)] max-w-[320px] p-0 shadow-2xl border-0 overflow-hidden rounded-[calc(var(--radius)*1.5)]"

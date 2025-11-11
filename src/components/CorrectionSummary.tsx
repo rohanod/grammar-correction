@@ -52,10 +52,7 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
             {Object.entries(correctionsByType).map(([type, count]) => (
-              <motion.div
-                key={type}
-                transition={{ duration: 0.2 }}
-              >
+              <div key={type}>
                 <Card className="p-3 md:p-4 text-center transition-shadow">
                   <div className="flex flex-col gap-1.5 md:gap-2">
                     <Badge className={`${getCorrectionTypeColor(type as CorrectionType)} text-white text-xs`}>
@@ -64,7 +61,7 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
                     <span className="text-xl md:text-2xl font-bold text-foreground">{count}</span>
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
 

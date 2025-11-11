@@ -73,17 +73,14 @@ function CorrectionSpan({ word, correction }: CorrectionSpanProps) {
     <TooltipProvider>
       <Tooltip open={isOpen} onOpenChange={isMobile ? setIsOpen : undefined} delayDuration={0}>
         <TooltipTrigger asChild>
-          <motion.span
+          <span
             className={`px-1 py-0.5 rounded-[var(--radius)] cursor-pointer transition-colors ${getCorrectionColor(correction.type)}`}
-            whileHover={isMobile ? undefined : { scale: 1.05 }}
-            whileTap={isMobile ? { scale: 0.95 } : undefined}
-            transition={{ duration: 0.2 }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
           >
             {word}
-          </motion.span>
+          </span>
         </TooltipTrigger>
         <TooltipContent 
           className="max-w-xs z-50"
