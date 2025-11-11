@@ -2,46 +2,17 @@ import { useState } from 'react'
 import { TextWithHighlights } from '@/components/TextWithHighlights'
 import { Card } from '@/components/ui/card'
 import { CorrectionData } from '@/lib/types'
+import { EmptyState } from '@/components/EmptyState'
+import { parseCorrectionFromURL } from '@/lib/correction-parser'
 import { motion } from 'framer-motion'
 
-const EXAMPLE_DATA: CorrectionData = {
-  original: "Helo world! This are a example of grammer corrections.",
-  corrected: "Hello world! This is an example of grammar corrections.",
-  corrections: [
-    {
-      type: "replacement",
-      original: "Helo",
-      corrected: "Hello",
-      position: 0,
-      reason: "Spelling error"
-    },
-    {
-      type: "replacement",
-      original: "are",
-      corrected: "is",
-      position: 18,
-      reason: "Subject-verb agreement"
-    },
-    {
-      type: "replacement",
-      original: "a",
-      corrected: "an",
-      position: 21,
-      reason: "Article correction (before vowel)"
-    },
-    {
-      type: "replacement",
-      original: "grammer",
-      corrected: "grammar",
-      position: 35,
-      reason: "Spelling error"
-    }
-  ]
-}
-
 function App() {
-  const [correctionData] = useState<CorrectionData>(EXAMPLE_DATA)
+  const [correctionData] = useState<CorrectionData | null>(parseCorrectionFromURL())
   const [showCorrected, setShowCorrected] = useState(false)
+
+  if (!correctionData) {
+    return <EmptyState />
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
