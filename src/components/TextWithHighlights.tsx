@@ -64,19 +64,9 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
       )
     } else {
       elements.push(
-        <motion.span 
-          key={`${index}-${showCorrected}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            type: 'spring', 
-            stiffness: 350, 
-            damping: 25,
-            delay: index * 0.02
-          }}
-        >
+        <span key={`${index}-${showCorrected}`}>
           {word}
-        </motion.span>
+        </span>
       )
     }
 
@@ -157,14 +147,6 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
       <>
         <motion.span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ 
-            type: 'spring', 
-            stiffness: 350, 
-            damping: 20,
-            delay: index * 0.02
-          }}
           whileTap={{ scale: 0.92, rotate: -2 }}
           onClick={handleClick}
         >
@@ -187,14 +169,6 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
       <PopoverTrigger asChild>
         <motion.span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ 
-            type: 'spring', 
-            stiffness: 350, 
-            damping: 20,
-            delay: index * 0.02
-          }}
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
           onMouseEnter={handleMouseEnter}
