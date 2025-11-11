@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { TextWithHighlights } from '@/components/TextWithHighlights'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { parseCorrectionFromURL } from '@/lib/correction-parser'
 import { CorrectionData } from '@/lib/types'
-import { Warning, CheckCircle, ArrowsClockwise } from '@phosphor-icons/react'
+import { Warning, ArrowsClockwise } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
 function App() {
@@ -77,10 +76,6 @@ function App() {
               </h1>
             </div>
             <div className="flex items-center gap-3">
-              <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm">
-                <CheckCircle size={18} weight="bold" className="mr-2" />
-                {correctionData.corrections.length} {correctionData.corrections.length === 1 ? 'correction' : 'corrections'}
-              </Badge>
               <Button 
                 onClick={() => setShowCorrected(!showCorrected)}
                 className="gap-2"
