@@ -75,11 +75,6 @@ function App() {
               <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
                 Grammar Correction
               </h1>
-              <p className="text-base md:text-lg text-muted-foreground">
-                {showCorrected 
-                  ? 'Viewing corrected text - hover over highlights to see changes'
-                  : 'Viewing original text - hover over highlights to see corrections'}
-              </p>
             </div>
             <div className="flex items-center gap-3">
               <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm">
