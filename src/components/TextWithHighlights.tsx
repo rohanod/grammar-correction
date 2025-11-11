@@ -60,10 +60,24 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
 
     if (correctionInRange) {
       elements.push(
-        <CorrectionHighlight key={index} word={word} correction={correctionInRange} />
+        <CorrectionHighlight key={`${index}-${showCorrected}`} word={word} correction={correctionInRange} index={index} />
       )
     } else {
-      elements.push(<span key={index}>{word}</span>)
+      elements.push(
+        <motion.span 
+          key={`${index}-${showCorrected}`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            type: 'spring', 
+            stiffness: 350, 
+            damping: 25,
+            delay: index * 0.02
+          }}
+        >
+          {word}
+        </motion.span>
+      )
     }
 
     currentPosition = wordEnd
@@ -76,7 +90,7 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
   )
 }
 
-function CorrectionHighlight({ word, correction }: { word: string; correction: Correction }) {
+function CorrectionHighlight({ word, correction, index }: { word: string; correction: Correction; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
   const isMobile = useIsMobile()
 
@@ -97,7 +111,12 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
   }
 
   const correctionContent = (
-    <div className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden">
+    <motion.div 
+      className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden"
+      initial={{ opacity: 0, scale: 0.9, y: -10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+    >
       <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
         <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[calc(var(--radius)*0.75)] text-xs`}>
           {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)}
@@ -130,7 +149,7 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 
   if (isMobile) {
@@ -138,8 +157,15 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
       <>
         <motion.span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.15 }}
+          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ 
+            type: 'spring', 
+            stiffness: 350, 
+            damping: 20,
+            delay: index * 0.02
+          }}
+          whileTap={{ scale: 0.92, rotate: -2 }}
           onClick={handleClick}
         >
           {word}
@@ -161,8 +187,16 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
       <PopoverTrigger asChild>
         <motion.span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.15 }}
+          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ 
+            type: 'spring', 
+            stiffness: 350, 
+            damping: 20,
+            delay: index * 0.02
+          }}
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}

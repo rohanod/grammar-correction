@@ -47,9 +47,9 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-12">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          initial={{ opacity: 0, y: -40, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20, duration: 0.6 }}
           className="mb-6 md:mb-8"
         >
           <div className="flex items-start md:items-center justify-between mb-6 md:mb-8 flex-col md:flex-row gap-4">
@@ -94,9 +94,9 @@ function App() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+          initial={{ opacity: 0, y: 40, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 280, damping: 22, delay: 0.15 }}
         >
           <Card className="p-4 md:p-8 lg:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10 rounded-[calc(var(--radius)*1.5)]">
             <TextWithHighlights 
@@ -108,9 +108,9 @@ function App() {
         </motion.div>
         
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25, delay: 0.3 }}
           className="mt-4 md:mt-6 text-center"
         >
           <p className="text-xs md:text-sm text-muted-foreground">
