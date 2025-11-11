@@ -92,7 +92,7 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
   }
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={isOpen}>
       <PopoverTrigger asChild>
         <motion.span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all ${getCorrectionColor(correction.type, isMobile)}`}
