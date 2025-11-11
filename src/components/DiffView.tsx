@@ -3,7 +3,8 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Correction, CorrectionType } from '@/lib/types'
 import { motion } from 'framer-motion'
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface DiffViewProps {
   original: string
@@ -14,13 +15,13 @@ interface DiffViewProps {
 function getCorrectionColor(type: CorrectionType): string {
   switch (type) {
     case 'addition':
-      return 'bg-green-100 text-green-800 hover:bg-green-200'
+      return 'bg-green-100 text-green-800'
     case 'deletion':
-      return 'bg-red-100 text-red-800 hover:bg-red-200 line-through'
+      return 'bg-red-100 text-red-800 line-through'
     case 'replacement':
-      return 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+      return 'bg-amber-100 text-amber-800'
     case 'punctuation':
-      return 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+      return 'bg-blue-100 text-blue-800'
     default:
       return 'bg-gray-100 text-gray-800'
   }
@@ -39,6 +40,71 @@ function getCorrectionBadgeColor(type: CorrectionType): string {
     default:
       return 'bg-gray-500 text-white'
   }
+}
+
+interface CorrectionSpanProps {
+  word: string
+  correction: Correction
+}
+
+function CorrectionSpan({ word, correction }: CorrectionSpanProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const isMobile = useIsMobile()
+
+  const handleInteraction = () => {
+    if (isMobile) {
+      setIsOpen(!isOpen)
+    }
+  }
+
+  const handleMouseEnter = () => {
+    if (!isMobile) {
+      setIsOpen(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setIsOpen(false)
+    }
+  }
+
+  return (
+    <TooltipProvider>
+      <Tooltip open={isOpen} onOpenChange={setIsOpen} delayDuration={0}>
+        <TooltipTrigger asChild>
+          <motion.span
+            className={`px-1 py-0.5 rounded-[var(--radius)] cursor-help transition-colors ${getCorrectionColor(correction.type)}`}
+            whileHover={isMobile ? undefined : { scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleInteraction}
+          >
+            {word}
+          </motion.span>
+        </TooltipTrigger>
+        <TooltipContent 
+          className="max-w-xs"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="flex flex-col gap-2">
+            <Badge className={getCorrectionBadgeColor(correction.type)}>
+              {correction.type.toUpperCase()}
+            </Badge>
+            <div className="text-sm">
+              <div className="font-medium">Original: <span className="font-normal">{correction.original}</span></div>
+              <div className="font-medium">Corrected: <span className="font-normal">{correction.corrected}</span></div>
+              {correction.reason && (
+                <div className="mt-2 text-muted-foreground">{correction.reason}</div>
+              )}
+            </div>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
 }
 
 interface TextWithCorrectionsProps {
@@ -66,33 +132,7 @@ function TextWithCorrections({ text, corrections, showOriginal }: TextWithCorrec
 
     if (correctionInRange) {
       elements.push(
-        <TooltipProvider key={index}>
-          <Tooltip delayDuration={200}>
-            <TooltipTrigger asChild>
-              <motion.span
-                className={`px-1 py-0.5 rounded cursor-help transition-colors ${getCorrectionColor(correctionInRange.type)}`}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                {word}
-              </motion.span>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs">
-              <div className="flex flex-col gap-2">
-                <Badge className={getCorrectionBadgeColor(correctionInRange.type)}>
-                  {correctionInRange.type.toUpperCase()}
-                </Badge>
-                <div className="text-sm">
-                  <div className="font-medium">Original: <span className="font-normal">{correctionInRange.original}</span></div>
-                  <div className="font-medium">Corrected: <span className="font-normal">{correctionInRange.corrected}</span></div>
-                  {correctionInRange.reason && (
-                    <div className="mt-2 text-muted-foreground">{correctionInRange.reason}</div>
-                  )}
-                </div>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <CorrectionSpan key={index} word={word} correction={correctionInRange} />
       )
     } else {
       elements.push(<span key={index}>{word}</span>)
@@ -120,7 +160,7 @@ export function DiffView({ original, corrected, corrections }: DiffViewProps) {
                 {corrections.length} {corrections.length === 1 ? 'correction' : 'corrections'}
               </Badge>
             </div>
-            <div className="bg-muted/30 p-4 rounded-lg">
+            <div className="bg-muted/30 p-4 rounded-[var(--radius)]">
               <TextWithCorrections text={original} corrections={corrections} showOriginal={true} />
             </div>
           </div>
@@ -140,7 +180,7 @@ export function DiffView({ original, corrected, corrections }: DiffViewProps) {
                 ✓ Reviewed
               </Badge>
             </div>
-            <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
+            <div className="bg-primary/5 p-4 rounded-[var(--radius)] border border-primary/10">
               <TextWithCorrections text={corrected} corrections={corrections} showOriginal={false} />
             </div>
           </div>

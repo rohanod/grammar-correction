@@ -12,13 +12,13 @@ interface CorrectionSummaryProps {
 function getCorrectionTypeColor(type: CorrectionType): string {
   switch (type) {
     case 'addition':
-      return 'bg-green-500 hover:bg-green-600'
+      return 'bg-green-500'
     case 'deletion':
-      return 'bg-red-500 hover:bg-red-600'
+      return 'bg-red-500'
     case 'replacement':
-      return 'bg-amber-500 hover:bg-amber-600'
+      return 'bg-amber-500'
     case 'punctuation':
-      return 'bg-blue-500 hover:bg-blue-600'
+      return 'bg-blue-500'
     default:
       return 'bg-gray-500'
   }
@@ -40,7 +40,7 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-foreground">Correction Summary</h2>
-            <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-[var(--radius-full)]">
               <Check size={18} weight="bold" className="text-primary" />
               <span className="text-sm font-semibold text-primary">
                 {corrections.length} Total
@@ -54,10 +54,9 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
             {Object.entries(correctionsByType).map(([type, count]) => (
               <motion.div
                 key={type}
-                whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card className="p-4 text-center hover:shadow-md transition-shadow">
+                <Card className="p-4 text-center transition-shadow">
                   <div className="flex flex-col gap-2">
                     <Badge className={`${getCorrectionTypeColor(type as CorrectionType)} text-white`}>
                       {type}
@@ -69,7 +68,7 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
             ))}
           </div>
 
-          <div className="mt-2 bg-muted/30 p-4 rounded-lg">
+          <div className="mt-2 bg-muted/30 p-4 rounded-[var(--radius)]">
             <h3 className="text-sm font-semibold text-foreground mb-3">All Corrections</h3>
             <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
               {corrections.map((correction, index) => (

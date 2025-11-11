@@ -1,64 +1,49 @@
-import { useEffect, useState } from 'react'
-import { EmptyState } from '@/components/EmptyState'
+import { useState } from 'react'
 import { TextWithHighlights } from '@/components/TextWithHighlights'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { parseCorrectionFromURL } from '@/lib/correction-parser'
 import { CorrectionData } from '@/lib/types'
-import { Warning, ArrowsClockwise } from '@phosphor-icons/react'
+import { ArrowsClockwise } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
-function App() {
-  const [correctionData, setCorrectionData] = useState<CorrectionData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [showCorrected, setShowCorrected] = useState(false)
-
-  useEffect(() => {
-    try {
-      const data = parseCorrectionFromURL()
-      if (data) {
-        setCorrectionData(data)
-      }
-    } catch (err) {
-      setError('Failed to parse correction data. Please check the URL format.')
-    } finally {
-      setLoading(false)
+const EXAMPLE_DATA: CorrectionData = {
+  original: "Helo world! This are a example of grammer corrections.",
+  corrected: "Hello world! This is an example of grammar corrections.",
+  corrections: [
+    {
+      type: "replacement",
+      original: "Helo",
+      corrected: "Hello",
+      position: 0,
+      reason: "Spelling error"
+    },
+    {
+      type: "replacement",
+      original: "are",
+      corrected: "is",
+      position: 18,
+      reason: "Subject-verb agreement"
+    },
+    {
+      type: "replacement",
+      original: "a",
+      corrected: "an",
+      position: 21,
+      reason: "Article correction (before vowel)"
+    },
+    {
+      type: "replacement",
+      original: "grammer",
+      corrected: "grammar",
+      position: 35,
+      reason: "Spelling error"
     }
-  }, [])
+  ]
+}
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-8">
-        <div className="max-w-4xl mx-auto">
-          <Alert variant="destructive">
-            <Warning size={20} weight="bold" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        </div>
-      </div>
-    )
-  }
-
-  if (!correctionData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-8">
-        <EmptyState />
-      </div>
-    )
-  }
+function App() {
+  const [correctionData] = useState<CorrectionData>(EXAMPLE_DATA)
+  const [showCorrected, setShowCorrected] = useState(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -93,7 +78,7 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10 rounded-xl">
+          <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10 rounded-[calc(var(--radius)*1.5)]">
             <TextWithHighlights 
               text={showCorrected ? correctionData.corrected : correctionData.original}
               corrections={correctionData.corrections}
