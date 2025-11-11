@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
-import { DiffView } from '@/components/DiffView'
-import { CorrectionSummary } from '@/components/CorrectionSummary'
+import { TextWithHighlights } from '@/components/TextWithHighlights'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { parseCorrectionFromURL } from '@/lib/correction-parser'
 import { CorrectionData } from '@/lib/types'
-import { Warning } from '@phosphor-icons/react'
+import { Warning, CheckCircle } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-8">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <Alert variant="destructive">
             <Warning size={20} weight="bold" />
             <AlertDescription>{error}</AlertDescription>
@@ -60,31 +61,41 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="max-w-7xl mx-auto p-8">
+      <div className="max-w-5xl mx-auto p-6 md:p-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
           className="mb-8"
         >
-          <div className="flex flex-col gap-2 mb-8">
-            <h1 className="text-4xl font-bold text-foreground tracking-tight">
-              Grammar Correction Analysis
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Word-level comparison showing all corrections and improvements
-            </p>
+          <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+                Grammar Correction
+              </h1>
+              <p className="text-base md:text-lg text-muted-foreground">
+                Hover over highlighted words to see corrections
+              </p>
+            </div>
+            <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm">
+              <CheckCircle size={18} weight="bold" className="mr-2" />
+              {correctionData.corrections.length} {correctionData.corrections.length === 1 ? 'correction' : 'corrections'}
+            </Badge>
           </div>
         </motion.div>
 
-        <div className="flex flex-col gap-8">
-          <CorrectionSummary corrections={correctionData.corrections} />
-          <DiffView
-            original={correctionData.original}
-            corrected={correctionData.corrected}
-            corrections={correctionData.corrections}
-          />
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10">
+            <TextWithHighlights 
+              text={correctionData.corrected} 
+              corrections={correctionData.corrections} 
+            />
+          </Card>
+        </motion.div>
       </div>
     </div>
   )
