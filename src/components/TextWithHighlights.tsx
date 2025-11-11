@@ -97,14 +97,14 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
   }
 
   const correctionContent = (
-    <div className="flex flex-col">
+    <div className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden">
       <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
-        <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[var(--radius)] text-xs`}>
+        <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[calc(var(--radius)*0.75)] text-xs`}>
           {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)}
         </Badge>
         
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 mb-4">
-          <div className="flex-1 bg-destructive/10 p-3 rounded-[var(--radius)]">
+          <div className="flex-1 bg-destructive/10 p-3 rounded-[calc(var(--radius)*0.75)]">
             <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Original</div>
             <div className="text-base font-medium text-destructive line-through break-words">
               {correction.original}
@@ -113,7 +113,7 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
           
           <ArrowRight size={20} className="text-primary shrink-0 self-center md:self-auto rotate-90 md:rotate-0" weight="bold" />
           
-          <div className="flex-1 bg-green-500/10 p-3 rounded-[var(--radius)]">
+          <div className="flex-1 bg-green-500/10 p-3 rounded-[calc(var(--radius)*0.75)]">
             <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
             <div className="text-base font-semibold text-green-600 break-words">
               {correction.corrected}
