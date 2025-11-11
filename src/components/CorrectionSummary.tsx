@@ -1,0 +1,98 @@
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Correction, CorrectionType } from '@/lib/types'
+import { Check } from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
+
+interface CorrectionSummaryProps {
+  corrections: Correction[]
+}
+
+function getCorrectionTypeColor(type: CorrectionType): string {
+  switch (type) {
+    case 'addition':
+      return 'bg-green-500 hover:bg-green-600'
+    case 'deletion':
+      return 'bg-red-500 hover:bg-red-600'
+    case 'replacement':
+      return 'bg-amber-500 hover:bg-amber-600'
+    case 'punctuation':
+      return 'bg-blue-500 hover:bg-blue-600'
+    default:
+      return 'bg-gray-500'
+  }
+}
+
+export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
+  const correctionsByType = corrections.reduce((acc, correction) => {
+    acc[correction.type] = (acc[correction.type] || 0) + 1
+    return acc
+  }, {} as Record<CorrectionType, number>)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <Card className="p-6 shadow-lg bg-gradient-to-br from-card to-primary/5">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-foreground">Correction Summary</h2>
+            <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+              <Check size={18} weight="bold" className="text-primary" />
+              <span className="text-sm font-semibold text-primary">
+                {corrections.length} Total
+              </span>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {Object.entries(correctionsByType).map(([type, count]) => (
+              <motion.div
+                key={type}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Card className="p-4 text-center hover:shadow-md transition-shadow">
+                  <div className="flex flex-col gap-2">
+                    <Badge className={`${getCorrectionTypeColor(type as CorrectionType)} text-white`}>
+                      {type}
+                    </Badge>
+                    <span className="text-2xl font-bold text-foreground">{count}</span>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-2 bg-muted/30 p-4 rounded-lg">
+            <h3 className="text-sm font-semibold text-foreground mb-3">All Corrections</h3>
+            <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+              {corrections.map((correction, index) => (
+                <div key={index} className="flex items-start gap-3 text-sm">
+                  <Badge variant="outline" className="shrink-0 text-xs">
+                    {index + 1}
+                  </Badge>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="line-through text-red-600 font-medium">{correction.original}</span>
+                      <span className="text-muted-foreground">→</span>
+                      <span className="text-green-600 font-medium">{correction.corrected}</span>
+                    </div>
+                    {correction.reason && (
+                      <p className="text-xs text-muted-foreground mt-1">{correction.reason}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
+  )
+}
