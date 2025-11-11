@@ -1,0 +1,276 @@
+================================================================================
+           GRAMMAR CORRECTION VIEWER - URL CREATION GUIDE
+================================================================================
+
+OVERVIEW
+--------
+This application displays grammar corrections by highlighting changes between
+original and corrected text. It accepts data via URL parameters.
+
+
+URL STRUCTURE
+-------------
+https://your-app-url.com/?original=<TEXT>&corrections=<JSON_DATA>
+
+Two required URL parameters:
+1. original  - The original text with errors
+2. corrections - JSON object containing corrected text and correction details
+
+
+PARAMETER 1: original
+---------------------
+The original text that contains errors.
+
+- Must be URL-encoded
+- Use encodeURIComponent() in JavaScript
+- Example: "Hello world" becomes "Hello%20world"
+
+
+PARAMETER 2: corrections
+------------------------
+A JSON object containing:
+- corrected: The fully corrected text
+- corrections: Array of individual correction objects
+
+JSON Structure:
+{
+  "corrected": "Corrected sentence here",
+  "corrections": [
+    {
+      "type": "replacement",
+      "original": "wrong word",
+      "corrected": "right word",
+      "position": 0,
+      "reason": "Explanation of correction"
+    }
+  ]
+}
+
+Correction Types:
+- "replacement" - Word or phrase replaced
+- "addition" - Text added
+- "deletion" - Text removed
+- "punctuation" - Punctuation change
+
+
+CORRECTION OBJECT FIELDS
+-------------------------
+type       (required) - Type of correction (see above)
+original   (required) - The original incorrect text
+corrected  (required) - The corrected text
+position   (required) - Character position in original text where error starts
+reason     (optional) - Human-readable explanation of the correction
+
+
+STEP-BY-STEP: CREATING A URL MANUALLY
+--------------------------------------
+
+Step 1: Prepare your original text
+Example: "Helo world! This are wrong."
+
+Step 2: Create the corrected text
+Example: "Hello world! This is wrong."
+
+Step 3: Identify each correction
+- "Helo" → "Hello" at position 0 (spelling)
+- "are" → "is" at position 18 (grammar)
+
+Step 4: Build the JSON object
+{
+  "corrected": "Hello world! This is wrong.",
+  "corrections": [
+    {
+      "type": "replacement",
+      "original": "Helo",
+      "corrected": "Hello",
+      "position": 0,
+      "reason": "Spelling error"
+    },
+    {
+      "type": "replacement",
+      "original": "are",
+      "corrected": "is",
+      "position": 18,
+      "reason": "Subject-verb agreement"
+    }
+  ]
+}
+
+Step 5: URL-encode the parameters
+original: Helo%20world!%20This%20are%20wrong.
+corrections: (URL-encoded JSON - see JavaScript example below)
+
+Step 6: Construct the final URL
+?original=Helo%20world!%20This%20are%20wrong.&corrections={...encoded JSON...}
+
+
+JAVASCRIPT EXAMPLE: GENERATING A URL
+-------------------------------------
+
+const original = "Helo world! This are a example.";
+
+const correctionData = {
+  corrected: "Hello world! This is an example.",
+  corrections: [
+    {
+      type: "replacement",
+      original: "Helo",
+      corrected: "Hello",
+      position: 0,
+      reason: "Spelling error"
+    },
+    {
+      type: "replacement",
+      original: "are",
+      corrected: "is",
+      position: 18,
+      reason: "Subject-verb agreement"
+    },
+    {
+      type: "replacement",
+      original: "a",
+      corrected: "an",
+      position: 21,
+      reason: "Article correction"
+    }
+  ]
+};
+
+// Create URL parameters
+const params = new URLSearchParams({
+  original: encodeURIComponent(original),
+  corrections: encodeURIComponent(JSON.stringify(correctionData))
+});
+
+// Generate full URL
+const url = `https://your-app.com/?${params.toString()}`;
+
+
+PYTHON EXAMPLE: GENERATING A URL
+---------------------------------
+
+import json
+from urllib.parse import urlencode, quote
+
+original = "Helo world! This are a example."
+
+correction_data = {
+    "corrected": "Hello world! This is an example.",
+    "corrections": [
+        {
+            "type": "replacement",
+            "original": "Helo",
+            "corrected": "Hello",
+            "position": 0,
+            "reason": "Spelling error"
+        },
+        {
+            "type": "replacement",
+            "original": "are",
+            "corrected": "is",
+            "position": 18,
+            "reason": "Subject-verb agreement"
+        }
+    ]
+}
+
+# Create URL parameters
+params = {
+    "original": original,
+    "corrections": json.dumps(correction_data)
+}
+
+# Generate full URL
+url = f"https://your-app.com/?{urlencode(params)}"
+
+
+FINDING CHARACTER POSITIONS
+----------------------------
+The "position" field indicates where in the ORIGINAL text the error starts.
+
+Example: "Helo world! This are wrong."
+         0123456789...
+
+"Helo" starts at position 0
+"are" starts at position 18
+
+JavaScript helper:
+  const position = originalText.indexOf("error word");
+
+Python helper:
+  position = original_text.find("error word")
+
+
+COMMON MISTAKES TO AVOID
+-------------------------
+1. Forgetting to URL-encode parameters
+   ✗ ?original=Hello world
+   ✓ ?original=Hello%20world
+
+2. Not encoding the JSON string
+   ✗ ?corrections={"corrected":"text"}
+   ✓ ?corrections=%7B%22corrected%22%3A%22text%22%7D
+
+3. Wrong character positions
+   - Count from 0, not 1
+   - Count all characters including spaces
+   - Position is in the ORIGINAL text, not corrected
+
+4. Mismatched text between original parameter and corrections
+   - The "original" parameter must match the source text
+   - Correction positions must align with the original text
+
+5. Invalid JSON structure
+   - Ensure "corrected" field exists at root level
+   - Ensure "corrections" is an array
+   - Each correction must have required fields
+
+
+TESTING YOUR URL
+----------------
+1. Try the example button in the app first to see proper format
+2. Start with simple one-word corrections
+3. Verify JSON is valid using a JSON validator
+4. Check that positions align with your original text
+5. Test URL-encoding with online tools if needed
+
+
+TIPS FOR INTEGRATION
+---------------------
+- Generate URLs programmatically from grammar checking APIs
+- Store correction data in a database and generate URLs on demand
+- Use the app as an endpoint for grammar checking tools
+- Create shareable correction links for educational purposes
+
+
+TECHNICAL NOTES
+---------------
+- Maximum URL length: ~2000 characters (browser dependent)
+- For very long texts, consider alternative storage methods
+- Special characters in text will increase encoded URL length
+- All text encoding should be UTF-8
+
+
+TROUBLESHOOTING
+---------------
+Problem: Page shows empty state
+Solution: Verify both "original" and "corrections" parameters exist
+
+Problem: No highlights showing
+Solution: Check that correction positions match original text exactly
+
+Problem: Page won't load
+Solution: URL may be too long; reduce text length or use backend storage
+
+Problem: Corrections not displaying correctly
+Solution: Validate JSON structure matches expected format
+
+
+SUPPORT
+-------
+For issues or questions, check the JSON format example in the app's
+empty state display or examine the example URL generated by the
+"Try Example" button.
+
+
+================================================================================
