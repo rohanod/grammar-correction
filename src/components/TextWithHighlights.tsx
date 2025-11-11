@@ -12,33 +12,54 @@ interface TextWithHighlightsProps {
   showCorrected: boolean
 }
 
-function getCorrectionColor(type: CorrectionType, isMobile: boolean): string {
+function getCorrectionColor(type: CorrectionType): string {
   switch (type) {
-    case 'addition':
-      return `bg-green-400/30 border-b-2 border-green-500`
-    case 'deletion':
-      return `bg-red-400/30 border-b-2 border-red-500`
-    case 'replacement':
-      return `bg-primary/30 border-b-2 border-primary`
+    case 'grammar':
+      return 'bg-[oklch(0.55_0.20_264)]/20 border-b-2 border-[oklch(0.55_0.20_264)]'
+    case 'spelling':
+      return 'bg-red-500/20 border-b-2 border-red-500'
     case 'punctuation':
-      return `bg-secondary/30 border-b-2 border-secondary`
+      return 'bg-[oklch(0.83_0.08_264)]/20 border-b-2 border-[oklch(0.83_0.08_264)]'
+    case 'word-choice':
+      return 'bg-[oklch(0.63_0.15_264)]/20 border-b-2 border-[oklch(0.63_0.15_264)]'
+    case 'capitalization':
+      return 'bg-orange-500/20 border-b-2 border-orange-500'
     default:
-      return `bg-muted/30`
+      return 'bg-muted/30 border-b-2 border-muted-foreground'
   }
 }
 
 function getCorrectionBadgeColor(type: CorrectionType): string {
   switch (type) {
-    case 'addition':
-      return 'bg-green-500 text-white'
-    case 'deletion':
+    case 'grammar':
+      return 'bg-[oklch(0.55_0.20_264)] text-white'
+    case 'spelling':
       return 'bg-red-500 text-white'
-    case 'replacement':
-      return 'bg-primary text-primary-foreground'
     case 'punctuation':
-      return 'bg-secondary text-secondary-foreground'
+      return 'bg-[oklch(0.83_0.08_264)] text-[oklch(0.25_0.02_240)]'
+    case 'word-choice':
+      return 'bg-[oklch(0.63_0.15_264)] text-white'
+    case 'capitalization':
+      return 'bg-orange-500 text-white'
     default:
       return 'bg-muted text-muted-foreground'
+  }
+}
+
+function getCorrectionLabel(type: CorrectionType): string {
+  switch (type) {
+    case 'grammar':
+      return 'Grammar'
+    case 'spelling':
+      return 'Spelling'
+    case 'punctuation':
+      return 'Punctuation'
+    case 'word-choice':
+      return 'Word Choice'
+    case 'capitalization':
+      return 'Capitalization'
+    default:
+      return type
   }
 }
 
@@ -103,15 +124,15 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
   const correctionContent = (
     <div className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden">
       <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
-        <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[calc(var(--radius)*0.75)] text-xs`}>
-          {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)}
+        <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[calc(var(--radius)*0.75)] text-xs font-semibold`}>
+          {getCorrectionLabel(correction.type)}
         </Badge>
         
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 mb-4">
-          <div className="flex-1 bg-destructive/10 p-3 rounded-[calc(var(--radius)*0.75)]">
+          <div className="flex-1 bg-red-500/10 p-3 rounded-[calc(var(--radius)*0.75)]">
             <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Original</div>
-            <div className="text-base font-medium text-destructive line-through break-words">
-              {correction.original}
+            <div className="text-base font-medium text-red-600 line-through break-words">
+              {correction.original || '(missing)'}
             </div>
           </div>
           
@@ -120,7 +141,7 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
           <div className="flex-1 bg-green-500/10 p-3 rounded-[calc(var(--radius)*0.75)]">
             <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
             <div className="text-base font-semibold text-green-600 break-words">
-              {correction.corrected}
+              {correction.corrected || '(removed)'}
             </div>
           </div>
         </div>
@@ -141,7 +162,7 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
     return (
       <>
         <span
-          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
+          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type)}`}
           onClick={handleClick}
         >
           {word}
@@ -162,10 +183,9 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <span
-          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
+          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all ${getCorrectionColor(correction.type)}`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={handleClick}
         >
           {word}
         </span>

@@ -11,14 +11,16 @@ interface CorrectionSummaryProps {
 
 function getCorrectionTypeColor(type: CorrectionType): string {
   switch (type) {
-    case 'addition':
-      return 'bg-green-500'
-    case 'deletion':
+    case 'grammar':
+      return 'bg-[oklch(0.55_0.20_264)]'
+    case 'spelling':
       return 'bg-red-500'
-    case 'replacement':
-      return 'bg-amber-500'
     case 'punctuation':
-      return 'bg-blue-500'
+      return 'bg-[oklch(0.83_0.08_264)]'
+    case 'word-choice':
+      return 'bg-[oklch(0.63_0.15_264)]'
+    case 'capitalization':
+      return 'bg-orange-500'
     default:
       return 'bg-gray-500'
   }

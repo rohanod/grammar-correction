@@ -1,4 +1,4 @@
-export type CorrectionType = 'addition' | 'deletion' | 'replacement' | 'punctuation'
+export type CorrectionType = 'grammar' | 'spelling' | 'punctuation' | 'word-choice' | 'capitalization'
 
 export interface Correction {
   type: CorrectionType

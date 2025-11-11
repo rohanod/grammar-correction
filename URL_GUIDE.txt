@@ -47,10 +47,11 @@ JSON Structure:
 }
 
 Correction Types:
-- "replacement" - Word or phrase replaced
-- "addition" - Text added
-- "deletion" - Text removed
-- "punctuation" - Punctuation change
+- "grammar" - Grammar error (subject-verb agreement, tense, etc.)
+- "spelling" - Spelling mistake
+- "punctuation" - Punctuation change (missing/incorrect punctuation)
+- "word-choice" - Better word choice or vocabulary improvement
+- "capitalization" - Capitalization error
 
 
 CORRECTION OBJECT FIELDS
@@ -80,14 +81,14 @@ Step 4: Build the JSON object
   "corrected": "Hello world! This is wrong.",
   "corrections": [
     {
-      "type": "replacement",
+      "type": "spelling",
       "original": "Helo",
       "corrected": "Hello",
       "position": 0,
       "reason": "Spelling error"
     },
     {
-      "type": "replacement",
+      "type": "grammar",
       "original": "are",
       "corrected": "is",
       "position": 18,
@@ -113,21 +114,21 @@ const correctionData = {
   corrected: "Hello world! This is an example.",
   corrections: [
     {
-      type: "replacement",
+      type: "spelling",
       original: "Helo",
       corrected: "Hello",
       position: 0,
       reason: "Spelling error"
     },
     {
-      type: "replacement",
+      type: "grammar",
       original: "are",
       corrected: "is",
       position: 18,
       reason: "Subject-verb agreement"
     },
     {
-      type: "replacement",
+      type: "grammar",
       original: "a",
       corrected: "an",
       position: 21,
@@ -158,14 +159,14 @@ correction_data = {
     "corrected": "Hello world! This is an example.",
     "corrections": [
         {
-            "type": "replacement",
+            "type": "spelling",
             "original": "Helo",
             "corrected": "Hello",
             "position": 0,
             "reason": "Spelling error"
         },
         {
-            "type": "replacement",
+            "type": "grammar",
             "original": "are",
             "corrected": "is",
             "position": 18,

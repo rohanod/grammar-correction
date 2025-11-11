@@ -64,7 +64,7 @@ export function EmptyState() {
   "corrected": "Fixed text here",
   "corrections": [
     {
-      "type": "replacement",
+      "type": "grammar|spelling|punctuation|word-choice|capitalization",
       "original": "wrong",
       "corrected": "right",
       "position": 0,

@@ -23,37 +23,51 @@ export function parseCorrectionFromURL(): CorrectionData | null {
 }
 
 export function generateExampleURL(): string {
-  const original = "Helo world! This are a example of grammer corrections."
+  const original = "helo world! This are a example of grammer corrections"
   const correctionData = {
     corrected: "Hello world! This is an example of grammar corrections.",
     corrections: [
       {
-        type: "replacement",
-        original: "Helo",
+        type: "capitalization",
+        original: "helo",
         corrected: "Hello",
         position: 0,
-        reason: "Spelling error"
+        reason: "First word of sentence should be capitalized"
       },
       {
-        type: "replacement",
+        type: "spelling",
+        original: "helo",
+        corrected: "Hello",
+        position: 0,
+        reason: "Spelling error - correct spelling is 'Hello'"
+      },
+      {
+        type: "grammar",
         original: "are",
         corrected: "is",
         position: 18,
-        reason: "Subject-verb agreement"
+        reason: "Subject-verb agreement - singular 'This' requires 'is'"
       },
       {
-        type: "replacement",
+        type: "grammar",
         original: "a",
         corrected: "an",
         position: 21,
-        reason: "Article correction (before vowel)"
+        reason: "Article correction - use 'an' before vowel sounds"
       },
       {
-        type: "replacement",
+        type: "spelling",
         original: "grammer",
         corrected: "grammar",
         position: 35,
-        reason: "Spelling error"
+        reason: "Spelling error - correct spelling is 'grammar'"
+      },
+      {
+        type: "punctuation",
+        original: "",
+        corrected: ".",
+        position: 54,
+        reason: "Sentence should end with a period"
       }
     ]
   }

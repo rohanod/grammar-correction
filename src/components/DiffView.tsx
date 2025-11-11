@@ -14,14 +14,16 @@ interface DiffViewProps {
 
 function getCorrectionColor(type: CorrectionType): string {
   switch (type) {
-    case 'addition':
-      return 'bg-green-100 text-green-800'
-    case 'deletion':
-      return 'bg-red-100 text-red-800 line-through'
-    case 'replacement':
-      return 'bg-amber-100 text-amber-800'
-    case 'punctuation':
+    case 'grammar':
       return 'bg-blue-100 text-blue-800'
+    case 'spelling':
+      return 'bg-red-100 text-red-800'
+    case 'punctuation':
+      return 'bg-purple-100 text-purple-800'
+    case 'word-choice':
+      return 'bg-amber-100 text-amber-800'
+    case 'capitalization':
+      return 'bg-orange-100 text-orange-800'
     default:
       return 'bg-gray-100 text-gray-800'
   }
@@ -29,14 +31,16 @@ function getCorrectionColor(type: CorrectionType): string {
 
 function getCorrectionBadgeColor(type: CorrectionType): string {
   switch (type) {
-    case 'addition':
-      return 'bg-green-500 text-white'
-    case 'deletion':
-      return 'bg-red-500 text-white'
-    case 'replacement':
-      return 'bg-amber-500 text-white'
-    case 'punctuation':
+    case 'grammar':
       return 'bg-blue-500 text-white'
+    case 'spelling':
+      return 'bg-red-500 text-white'
+    case 'punctuation':
+      return 'bg-purple-500 text-white'
+    case 'word-choice':
+      return 'bg-amber-500 text-white'
+    case 'capitalization':
+      return 'bg-orange-500 text-white'
     default:
       return 'bg-gray-500 text-white'
   }
