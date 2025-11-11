@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Correction, CorrectionType } from '@/lib/types'
 import { motion } from 'framer-motion'
 import { ArrowRight } from '@phosphor-icons/react'
+import { useState } from 'react'
 
 interface TextWithHighlightsProps {
   text: string
@@ -56,57 +57,7 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
 
     if (correctionInRange) {
       elements.push(
-        <Popover key={index}>
-          <PopoverTrigger asChild>
-            <motion.span
-              className={`px-1.5 py-0.5 rounded-md cursor-pointer transition-all ${getCorrectionColor(correctionInRange.type)}`}
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.15 }}
-            >
-              {word}
-            </motion.span>
-          </PopoverTrigger>
-          <PopoverContent 
-            className="w-80 p-0 shadow-2xl border-0 overflow-hidden"
-            align="center"
-            sideOffset={8}
-          >
-            <div className="flex flex-col">
-              <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
-                <Badge className={`${getCorrectionBadgeColor(correctionInRange.type)} mb-4 px-3 py-1`}>
-                  {correctionInRange.type.charAt(0).toUpperCase() + correctionInRange.type.slice(1)}
-                </Badge>
-                
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex-1 bg-destructive/10 p-3 rounded-lg">
-                    <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Original</div>
-                    <div className="text-base font-medium text-destructive line-through">
-                      {correctionInRange.original}
-                    </div>
-                  </div>
-                  
-                  <ArrowRight size={24} className="text-primary shrink-0" weight="bold" />
-                  
-                  <div className="flex-1 bg-green-500/10 p-3 rounded-lg">
-                    <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
-                    <div className="text-base font-semibold text-green-600">
-                      {correctionInRange.corrected}
-                    </div>
-                  </div>
-                </div>
-                
-                {correctionInRange.reason && (
-                  <div className="mt-4 pt-4 border-t border-border/50">
-                    <div className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wide">Reason</div>
-                    <p className="text-sm text-foreground/90 leading-relaxed">
-                      {correctionInRange.reason}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <CorrectionHighlight key={index} word={word} correction={correctionInRange} />
       )
     } else {
       elements.push(<span key={index}>{word}</span>)
@@ -119,5 +70,67 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
     <div className="text-xl md:text-2xl leading-loose tracking-wide">
       {elements}
     </div>
+  )
+}
+
+function CorrectionHighlight({ word, correction }: { word: string; correction: Correction }) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <motion.span
+          className={`px-1.5 py-0.5 rounded-md cursor-pointer transition-all ${getCorrectionColor(correction.type)}`}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.15 }}
+          onMouseEnter={() => setIsOpen(true)}
+          onMouseLeave={() => setIsOpen(false)}
+        >
+          {word}
+        </motion.span>
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-80 p-0 shadow-2xl border-0 overflow-hidden rounded-xl"
+        align="center"
+        sideOffset={8}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+      >
+        <div className="flex flex-col">
+          <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
+            <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-lg`}>
+              {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)}
+            </Badge>
+            
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex-1 bg-destructive/10 p-3 rounded-lg">
+                <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Original</div>
+                <div className="text-base font-medium text-destructive line-through">
+                  {correction.original}
+                </div>
+              </div>
+              
+              <ArrowRight size={24} className="text-primary shrink-0" weight="bold" />
+              
+              <div className="flex-1 bg-green-500/10 p-3 rounded-lg">
+                <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
+                <div className="text-base font-semibold text-green-600">
+                  {correction.corrected}
+                </div>
+              </div>
+            </div>
+            
+            {correction.reason && (
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <div className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wide">Reason</div>
+                <p className="text-sm text-foreground/90 leading-relaxed">
+                  {correction.reason}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

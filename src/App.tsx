@@ -93,7 +93,7 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10">
+          <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10 rounded-xl">
             <TextWithHighlights 
               text={showCorrected ? correctionData.corrected : correctionData.original}
               corrections={correctionData.corrections}

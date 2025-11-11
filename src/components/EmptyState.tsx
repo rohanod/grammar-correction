@@ -18,7 +18,7 @@ export function EmptyState() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-2xl"
       >
-        <Card className="p-8 shadow-xl">
+        <Card className="p-8 shadow-xl rounded-xl">
           <div className="flex flex-col items-center gap-6 text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
               <Info size={32} weight="duotone" className="text-primary" />
@@ -31,7 +31,7 @@ export function EmptyState() {
               </p>
             </div>
 
-            <Alert className="text-left bg-accent/10 border-accent/20">
+            <Alert className="text-left bg-accent/10 border-accent/20 rounded-lg">
               <AlertDescription className="text-sm leading-relaxed">
                 <div className="font-medium mb-2">How to use:</div>
                 <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
@@ -46,7 +46,7 @@ export function EmptyState() {
               <Button 
                 onClick={handleTryExample} 
                 size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
               >
                 Try Example
                 <ArrowRight size={20} weight="bold" className="ml-2" />
