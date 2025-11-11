@@ -89,18 +89,20 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
       setIsOpen(true)
     }
   }
-}
 
-function CorrectionHighlight({ word, correction, index }: { word: string; correction: Correction; index: number }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const isMobile = useIsMobile()
-
-  const handleMouseEnter = () => {
+  const handleMouseLeave = () => {
     if (!isMobile) {
-      setIsOpen(true)
+      setIsOpen(false)
     }
   }
 
+  const handleClick = () => {
+    if (isMobile) {
+      setIsOpen(!isOpen)
+    }
+  }
+
+  const correctionContent = (
     <motion.div 
       className="flex flex-col rounded-[calc(var(--radius)*1.5)] overflow-hidden"
       initial={{ opacity: 0, scale: 0.9, y: -10 }}
