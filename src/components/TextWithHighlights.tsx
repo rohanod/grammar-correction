@@ -67,28 +67,28 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
             </motion.span>
           </PopoverTrigger>
           <PopoverContent 
-            className="w-80 p-0 shadow-xl border-2"
+            className="w-80 p-0 shadow-2xl border-0 overflow-hidden"
             align="center"
             sideOffset={8}
           >
             <div className="flex flex-col">
-              <div className="p-4 bg-gradient-to-br from-card to-muted/20">
-                <Badge className={`${getCorrectionBadgeColor(correctionInRange.type)} mb-3`}>
+              <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
+                <Badge className={`${getCorrectionBadgeColor(correctionInRange.type)} mb-4 px-3 py-1`}>
                   {correctionInRange.type.charAt(0).toUpperCase() + correctionInRange.type.slice(1)}
                 </Badge>
                 
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex-1">
-                    <div className="text-xs text-muted-foreground mb-1 font-medium">Original</div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex-1 bg-destructive/10 p-3 rounded-lg">
+                    <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Original</div>
                     <div className="text-base font-medium text-destructive line-through">
                       {correctionInRange.original}
                     </div>
                   </div>
                   
-                  <ArrowRight size={20} className="text-muted-foreground shrink-0" weight="bold" />
+                  <ArrowRight size={24} className="text-primary shrink-0" weight="bold" />
                   
-                  <div className="flex-1">
-                    <div className="text-xs text-muted-foreground mb-1 font-medium">Corrected</div>
+                  <div className="flex-1 bg-green-500/10 p-3 rounded-lg">
+                    <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
                     <div className="text-base font-semibold text-green-600">
                       {correctionInRange.corrected}
                     </div>
@@ -96,9 +96,9 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
                 </div>
                 
                 {correctionInRange.reason && (
-                  <div className="mt-3 pt-3 border-t border-border">
-                    <div className="text-xs text-muted-foreground mb-1 font-medium">Reason</div>
-                    <p className="text-sm text-foreground leading-relaxed">
+                  <div className="mt-4 pt-4 border-t border-border/50">
+                    <div className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wide">Reason</div>
+                    <p className="text-sm text-foreground/90 leading-relaxed">
                       {correctionInRange.reason}
                     </p>
                   </div>
