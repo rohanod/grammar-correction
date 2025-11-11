@@ -79,12 +79,6 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
   const [isOpen, setIsOpen] = useState(false)
   const isMobile = useIsMobile()
 
-  const handleInteraction = () => {
-    if (isMobile) {
-      setIsOpen(!isOpen)
-    }
-  }
-
   const handleMouseEnter = () => {
     if (!isMobile) {
       setIsOpen(true)
@@ -101,12 +95,11 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <motion.span
-          className={`px-1.5 py-0.5 rounded-[var(--radius)] cursor-pointer transition-all ${getCorrectionColor(correction.type, isMobile)}`}
+          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all ${getCorrectionColor(correction.type, isMobile)}`}
           whileHover={isMobile ? undefined : { scale: 1.02 }}
           transition={{ duration: 0.15 }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={handleInteraction}
         >
           {word}
         </motion.span>
