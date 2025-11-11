@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { TextWithHighlights } from '@/components/TextWithHighlights'
 import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { CorrectionData } from '@/lib/types'
-import { ArrowsClockwise } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
 const EXAMPLE_DATA: CorrectionData = {
@@ -64,17 +62,33 @@ function App() {
               </p>
             </div>
             <div className="flex items-center gap-3 w-full md:w-auto">
-              <Button 
-                onClick={() => setShowCorrected(!showCorrected)}
-                className="gap-2 w-full md:w-auto"
-                variant={showCorrected ? "secondary" : "default"}
-                size="default"
-              >
-                <ArrowsClockwise size={18} weight="bold" />
-                <span className="whitespace-nowrap">
-                  {showCorrected ? 'Show Original' : 'Show Corrected'}
-                </span>
-              </Button>
+              <div className="relative inline-flex items-center bg-muted rounded-full p-1 w-full md:w-auto">
+                <button
+                  onClick={() => setShowCorrected(false)}
+                  className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 flex-1 md:flex-none ${
+                    !showCorrected ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Original
+                </button>
+                <button
+                  onClick={() => setShowCorrected(true)}
+                  className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 flex-1 md:flex-none ${
+                    showCorrected ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Corrected
+                </button>
+                <motion.div
+                  className="absolute top-1 bottom-1 bg-primary rounded-full"
+                  initial={false}
+                  animate={{
+                    left: showCorrected ? '50%' : '0.25rem',
+                    right: showCorrected ? '0.25rem' : '50%',
+                  }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                />
+              </div>
             </div>
           </div>
         </motion.div>
