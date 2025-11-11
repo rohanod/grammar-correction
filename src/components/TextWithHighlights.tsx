@@ -69,7 +69,7 @@ export function TextWithHighlights({ text, corrections, showCorrected }: TextWit
   })
 
   return (
-    <div className="text-xl md:text-2xl leading-loose tracking-wide">
+    <div className="text-base md:text-xl lg:text-2xl leading-relaxed md:leading-loose tracking-wide">
       {elements}
     </div>
   )
@@ -91,11 +91,9 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
     }
   }
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     if (isMobile) {
       setIsOpen(!isOpen)
-    } else {
-      e.preventDefault()
     }
   }
 
@@ -103,8 +101,9 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
     <Popover open={isOpen} onOpenChange={isMobile ? setIsOpen : undefined}>
       <PopoverTrigger asChild>
         <motion.span
-          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all ${getCorrectionColor(correction.type, isMobile)}`}
+          className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type, isMobile)}`}
           whileHover={isMobile ? undefined : { scale: 1.02 }}
+          whileTap={isMobile ? { scale: 0.98 } : undefined}
           transition={{ duration: 0.15 }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -114,40 +113,40 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
         </motion.span>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-80 p-0 shadow-2xl border-0 overflow-hidden rounded-[calc(var(--radius)*1.5)]"
+        className="w-[calc(100vw-2rem)] max-w-[320px] p-0 shadow-2xl border-0 overflow-hidden rounded-[calc(var(--radius)*1.5)]"
         align="center"
         sideOffset={8}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <div className="flex flex-col">
-          <div className="p-5 bg-gradient-to-br from-card via-card to-accent/10">
-            <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-4 px-3 py-1 rounded-[var(--radius)]`}>
+          <div className="p-4 md:p-5 bg-gradient-to-br from-card via-card to-accent/10">
+            <Badge className={`${getCorrectionBadgeColor(correction.type)} mb-3 md:mb-4 px-2.5 md:px-3 py-1 rounded-[var(--radius)] text-xs`}>
               {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)}
             </Badge>
             
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 bg-destructive/10 p-3 rounded-[var(--radius)]">
-                <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Original</div>
-                <div className="text-base font-medium text-destructive line-through">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-3 mb-3 md:mb-4">
+              <div className="flex-1 bg-destructive/10 p-2.5 md:p-3 rounded-[var(--radius)]">
+                <div className="text-[10px] md:text-xs text-muted-foreground mb-1 md:mb-1.5 font-semibold uppercase tracking-wide">Original</div>
+                <div className="text-sm md:text-base font-medium text-destructive line-through break-words">
                   {correction.original}
                 </div>
               </div>
               
-              <ArrowRight size={24} className="text-primary shrink-0" weight="bold" />
+              <ArrowRight size={20} className="text-primary shrink-0 self-center md:self-auto rotate-90 md:rotate-0" weight="bold" />
               
-              <div className="flex-1 bg-green-500/10 p-3 rounded-[var(--radius)]">
-                <div className="text-xs text-muted-foreground mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
-                <div className="text-base font-semibold text-green-600">
+              <div className="flex-1 bg-green-500/10 p-2.5 md:p-3 rounded-[var(--radius)]">
+                <div className="text-[10px] md:text-xs text-muted-foreground mb-1 md:mb-1.5 font-semibold uppercase tracking-wide">Corrected</div>
+                <div className="text-sm md:text-base font-semibold text-green-600 break-words">
                   {correction.corrected}
                 </div>
               </div>
             </div>
             
             {correction.reason && (
-              <div className="mt-4 pt-4 border-t border-border/50">
-                <div className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wide">Reason</div>
-                <p className="text-sm text-foreground/90 leading-relaxed">
+              <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-border/50">
+                <div className="text-[10px] md:text-xs text-muted-foreground mb-1.5 md:mb-2 font-semibold uppercase tracking-wide">Reason</div>
+                <p className="text-xs md:text-sm text-foreground/90 leading-relaxed">
                   {correction.reason}
                 </p>
               </div>

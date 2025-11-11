@@ -11,32 +11,32 @@ export function EmptyState() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="flex items-center justify-center min-h-[60vh] p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-2xl"
       >
-        <Card className="p-8 shadow-xl rounded-xl">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <Info size={32} weight="duotone" className="text-primary" />
+        <Card className="p-6 md:p-8 shadow-xl rounded-xl">
+          <div className="flex flex-col items-center gap-4 md:gap-6 text-center">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <Info size={28} weight="duotone" className="text-primary md:w-8 md:h-8" />
             </div>
             
             <div className="flex flex-col gap-2">
-              <h1 className="text-3xl font-bold text-foreground">Grammar Correction Viewer</h1>
-              <p className="text-lg text-muted-foreground">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Grammar Correction Viewer</h1>
+              <p className="text-base md:text-lg text-muted-foreground">
                 Display and analyze grammar corrections at the word level
               </p>
             </div>
 
             <Alert className="text-left bg-accent/10 border-accent/20 rounded-lg">
-              <AlertDescription className="text-sm leading-relaxed">
+              <AlertDescription className="text-xs md:text-sm leading-relaxed">
                 <div className="font-medium mb-2">How to use:</div>
                 <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
                   <li>Add URL parameters with original text and correction data</li>
-                  <li>Format: <code className="bg-muted px-1 py-0.5 rounded text-xs">?original=text&corrections=data</code></li>
+                  <li>Format: <code className="bg-muted px-1 py-0.5 rounded text-xs break-all">?original=text&corrections=data</code></li>
                   <li>Corrections should be JSON with structure containing corrected text and corrections array</li>
                 </ol>
               </AlertDescription>
@@ -57,9 +57,9 @@ export function EmptyState() {
               </p>
             </div>
 
-            <div className="mt-4 p-4 bg-muted/30 rounded-lg w-full">
+            <div className="mt-2 md:mt-4 p-3 md:p-4 bg-muted/30 rounded-lg w-full">
               <p className="text-xs font-medium text-foreground mb-2">Expected JSON format:</p>
-              <pre className="text-left text-xs text-muted-foreground overflow-x-auto">
+              <pre className="text-left text-[10px] md:text-xs text-muted-foreground overflow-x-auto">
 {`{
   "corrected": "Fixed text here",
   "corrections": [

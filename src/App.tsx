@@ -47,27 +47,33 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="max-w-5xl mx-auto p-6 md:p-12">
+      <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-8"
+          className="mb-6 md:mb-8"
         >
-          <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+          <div className="flex items-start md:items-center justify-between mb-6 md:mb-8 flex-col md:flex-row gap-4">
+            <div className="flex flex-col gap-1 md:gap-2">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
                 Grammar Correction
               </h1>
+              <p className="text-sm text-muted-foreground md:hidden">
+                {showCorrected ? 'Viewing corrected text' : 'Viewing original text'}
+              </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full md:w-auto">
               <Button 
                 onClick={() => setShowCorrected(!showCorrected)}
-                className="gap-2"
+                className="gap-2 w-full md:w-auto"
                 variant={showCorrected ? "secondary" : "default"}
+                size="default"
               >
                 <ArrowsClockwise size={18} weight="bold" />
-                {showCorrected ? 'Show Original' : 'Show Corrected'}
+                <span className="whitespace-nowrap">
+                  {showCorrected ? 'Show Original' : 'Show Corrected'}
+                </span>
               </Button>
             </div>
           </div>
@@ -78,13 +84,24 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <Card className="p-8 md:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10 rounded-[calc(var(--radius)*1.5)]">
+          <Card className="p-4 md:p-8 lg:p-12 shadow-2xl bg-white/80 backdrop-blur-sm border-2 border-primary/10 rounded-[calc(var(--radius)*1.5)]">
             <TextWithHighlights 
               text={showCorrected ? correctionData.corrected : correctionData.original}
               corrections={correctionData.corrections}
               showCorrected={showCorrected}
             />
           </Card>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="mt-4 md:mt-6 text-center"
+        >
+          <p className="text-xs md:text-sm text-muted-foreground">
+            {showCorrected ? 'Tap' : 'Tap'} highlighted words on mobile or hover on desktop to see corrections
+          </p>
         </motion.div>
       </div>
     </div>

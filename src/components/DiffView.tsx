@@ -51,7 +51,7 @@ function CorrectionSpan({ word, correction }: CorrectionSpanProps) {
   const [isOpen, setIsOpen] = useState(false)
   const isMobile = useIsMobile()
 
-  const handleInteraction = () => {
+  const handleClick = () => {
     if (isMobile) {
       setIsOpen(!isOpen)
     }
@@ -71,21 +71,22 @@ function CorrectionSpan({ word, correction }: CorrectionSpanProps) {
 
   return (
     <TooltipProvider>
-      <Tooltip open={isOpen} onOpenChange={setIsOpen} delayDuration={0}>
+      <Tooltip open={isOpen} onOpenChange={isMobile ? setIsOpen : undefined} delayDuration={0}>
         <TooltipTrigger asChild>
           <motion.span
-            className={`px-1 py-0.5 rounded-[var(--radius)] cursor-help transition-colors ${getCorrectionColor(correction.type)}`}
+            className={`px-1 py-0.5 rounded-[var(--radius)] cursor-pointer transition-colors ${getCorrectionColor(correction.type)}`}
             whileHover={isMobile ? undefined : { scale: 1.05 }}
+            whileTap={isMobile ? { scale: 0.95 } : undefined}
             transition={{ duration: 0.2 }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onClick={handleInteraction}
+            onClick={handleClick}
           >
             {word}
           </motion.span>
         </TooltipTrigger>
         <TooltipContent 
-          className="max-w-xs"
+          className="max-w-xs z-50"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

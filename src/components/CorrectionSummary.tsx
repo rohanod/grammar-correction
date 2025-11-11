@@ -36,13 +36,13 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="p-6 shadow-lg bg-gradient-to-br from-card to-primary/5">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-foreground">Correction Summary</h2>
-            <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-[var(--radius-full)]">
-              <Check size={18} weight="bold" className="text-primary" />
-              <span className="text-sm font-semibold text-primary">
+      <Card className="p-4 md:p-6 shadow-lg bg-gradient-to-br from-card to-primary/5">
+        <div className="flex flex-col gap-3 md:gap-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">Correction Summary</h2>
+            <div className="flex items-center gap-2 bg-primary/10 px-2.5 md:px-3 py-1 md:py-1.5 rounded-[var(--radius-full)]">
+              <Check size={16} weight="bold" className="text-primary md:w-[18px] md:h-[18px]" />
+              <span className="text-xs md:text-sm font-semibold text-primary">
                 {corrections.length} Total
               </span>
             </div>
@@ -50,40 +50,40 @@ export function CorrectionSummary({ corrections }: CorrectionSummaryProps) {
 
           <Separator />
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
             {Object.entries(correctionsByType).map(([type, count]) => (
               <motion.div
                 key={type}
                 transition={{ duration: 0.2 }}
               >
-                <Card className="p-4 text-center transition-shadow">
-                  <div className="flex flex-col gap-2">
-                    <Badge className={`${getCorrectionTypeColor(type as CorrectionType)} text-white`}>
+                <Card className="p-3 md:p-4 text-center transition-shadow">
+                  <div className="flex flex-col gap-1.5 md:gap-2">
+                    <Badge className={`${getCorrectionTypeColor(type as CorrectionType)} text-white text-xs`}>
                       {type}
                     </Badge>
-                    <span className="text-2xl font-bold text-foreground">{count}</span>
+                    <span className="text-xl md:text-2xl font-bold text-foreground">{count}</span>
                   </div>
                 </Card>
               </motion.div>
             ))}
           </div>
 
-          <div className="mt-2 bg-muted/30 p-4 rounded-[var(--radius)]">
-            <h3 className="text-sm font-semibold text-foreground mb-3">All Corrections</h3>
+          <div className="mt-1 md:mt-2 bg-muted/30 p-3 md:p-4 rounded-[var(--radius)]">
+            <h3 className="text-xs md:text-sm font-semibold text-foreground mb-2 md:mb-3">All Corrections</h3>
             <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
               {corrections.map((correction, index) => (
-                <div key={index} className="flex items-start gap-3 text-sm">
-                  <Badge variant="outline" className="shrink-0 text-xs">
+                <div key={index} className="flex items-start gap-2 md:gap-3 text-xs md:text-sm">
+                  <Badge variant="outline" className="shrink-0 text-[10px] md:text-xs">
                     {index + 1}
                   </Badge>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="line-through text-red-600 font-medium">{correction.original}</span>
+                      <span className="line-through text-red-600 font-medium break-words">{correction.original}</span>
                       <span className="text-muted-foreground">→</span>
-                      <span className="text-green-600 font-medium">{correction.corrected}</span>
+                      <span className="text-green-600 font-medium break-words">{correction.corrected}</span>
                     </div>
                     {correction.reason && (
-                      <p className="text-xs text-muted-foreground mt-1">{correction.reason}</p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{correction.reason}</p>
                     )}
                   </div>
                 </div>
