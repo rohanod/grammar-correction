@@ -91,8 +91,16 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
     }
   }
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (isMobile) {
+      setIsOpen(!isOpen)
+    } else {
+      e.preventDefault()
+    }
+  }
+
   return (
-    <Popover open={isOpen}>
+    <Popover open={isOpen} onOpenChange={isMobile ? setIsOpen : undefined}>
       <PopoverTrigger asChild>
         <motion.span
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all ${getCorrectionColor(correction.type, isMobile)}`}
@@ -100,6 +108,7 @@ function CorrectionHighlight({ word, correction }: { word: string; correction: C
           transition={{ duration: 0.15 }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
         >
           {word}
         </motion.span>
