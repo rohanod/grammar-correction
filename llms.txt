@@ -1,12 +1,111 @@
-The grammar correction tool uses a URL-based data format to encode the original text, the corrected text, and the specific corrections made. The data is passed as a query parameter in the URL.
+The grammar correction tool uses a URL-based data format to encode the text and corrections. The data is passed as a query parameter in the URL.
 
 There is one primary method for encoding the data:
 
 A single `data` parameter that contains a base64-encoded JSON string.
 
-## Data Structure
+## Inline Data Structure (Recommended for LLMs)
 
-The JSON object has the following structure:
+The new inline format eliminates the need for position calculations, making it much easier for LLMs to generate. The JSON object has the following structure:
+
+```json
+{
+  "segments": [
+    {
+      "text": "word or phrase",
+      "correction": {
+        "type": "grammar" | "spelling" | "punctuation" | "word-choice" | "capitalization",
+        "corrected": "the corrected version",
+        "reason": "explanation of why the correction was made"
+      }
+    },
+    {
+      "text": "regular text without corrections"
+    }
+  ]
+}
+```
+
+- `segments`: An array of text segments that make up the full text.
+
+### Segment Object
+
+Each segment represents a portion of the text:
+
+- `text`: The text content of this segment. If this segment contains an error, this is the incorrect version.
+- `correction` (optional): If present, indicates this segment contains a correction.
+
+### Correction Object (within a segment)
+
+- `type`: The category of the correction.
+- `corrected`: The corrected version of the text (replaces the segment's `text` in the corrected view).
+- `reason`: A brief explanation for the correction.
+
+## Example (Inline Format)
+
+Here is an example of the inline format:
+
+```json
+{
+  "segments": [
+    {
+      "text": "helo",
+      "correction": {
+        "type": "spelling",
+        "corrected": "Hello",
+        "reason": "Spelling error - correct spelling is 'Hello'"
+      }
+    },
+    {
+      "text": " world! This "
+    },
+    {
+      "text": "are",
+      "correction": {
+        "type": "grammar",
+        "corrected": "is",
+        "reason": "Subject-verb agreement - singular 'This' requires 'is'"
+      }
+    },
+    {
+      "text": " "
+    },
+    {
+      "text": "a",
+      "correction": {
+        "type": "grammar",
+        "corrected": "an",
+        "reason": "Article correction - use 'an' before vowel sounds"
+      }
+    },
+    {
+      "text": " example of "
+    },
+    {
+      "text": "grammer",
+      "correction": {
+        "type": "spelling",
+        "corrected": "grammar",
+        "reason": "Spelling error - correct spelling is 'grammar'"
+      }
+    },
+    {
+      "text": " corrections",
+      "correction": {
+        "type": "punctuation",
+        "corrected": " corrections.",
+        "reason": "Sentence should end with a period"
+      }
+    }
+  ]
+}
+```
+
+This JSON object would be base64-encoded and appended to the URL as the `data` query parameter.
+
+## Legacy Data Structure (Position-Based)
+
+The tool also supports a legacy format for backward compatibility:
 
 ```json
 {
@@ -24,64 +123,4 @@ The JSON object has the following structure:
 }
 ```
 
-- `original`: The full original text.
-- `corrected`: The full text with all corrections applied.
-- `corrections`: An array of correction objects.
-
-### Correction Object
-
-- `type`: The category of the correction.
-- `original`: The specific word or phrase from the original text that was corrected. This can be an empty string for additions (e.g., adding punctuation).
-- `corrected`: The new word or phrase.
-- `position`: The 0-based index in the original string where the correction starts.
-- `reason`: A brief explanation for the correction.
-
-## Example
-
-Here is an example of a `CorrectionData` object:
-
-```json
-{
-  "original": "helo world! This are a example of grammer corrections",
-  "corrected": "Hello world! This is an example of grammar corrections.",
-  "corrections": [
-    {
-      "type": "spelling",
-      "original": "helo",
-      "corrected": "Hello",
-      "position": 0,
-      "reason": "Spelling error - correct spelling is 'Hello'"
-    },
-    {
-      "type": "grammar",
-      "original": "are",
-      "corrected": "is",
-      "position": 18,
-      "reason": "Subject-verb agreement - singular 'This' requires 'is'"
-    },
-    {
-      "type": "grammar",
-      "original": "a",
-      "corrected": "an",
-      "position": 21,
-      "reason": "Article correction - use 'an' before vowel sounds"
-    },
-    {
-      "type": "spelling",
-      "original": "grammer",
-      "corrected": "grammar",
-      "position": 35,
-      "reason": "Spelling error - correct spelling is 'grammar'"
-    },
-    {
-      "type": "punctuation",
-      "original": "",
-      "corrected": ".",
-      "position": 54,
-      "reason": "Sentence should end with a period"
-    }
-  ]
-}
-```
-
-This JSON object would be base64-encoded and appended to the URL as the `data` query parameter.
+Note: The legacy format requires calculating exact character positions, which is error-prone for LLMs. The inline format is recommended instead.

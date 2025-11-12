@@ -1,4 +1,4 @@
-import { CorrectionData } from './types'
+import { CorrectionData, InlineCorrectionData, TextSegment, Correction } from './types'
 
 function base64Decode(str: string): string {
   try {
@@ -16,6 +16,80 @@ function base64Encode(str: string): string {
   ))
 }
 
+// Convert legacy format to inline format
+function convertLegacyToInline(legacy: CorrectionData): InlineCorrectionData {
+  const segments: TextSegment[] = []
+  const text = legacy.original
+  
+  // Sort corrections by position
+  const sortedCorrections = [...legacy.corrections].sort((a, b) => a.position - b.position)
+  
+  let currentPos = 0
+  
+  for (const correction of sortedCorrections) {
+    // Add text before this correction
+    if (correction.position > currentPos) {
+      segments.push({
+        text: text.substring(currentPos, correction.position)
+      })
+    }
+    
+    // Add the correction segment
+    segments.push({
+      text: correction.original,
+      correction: {
+        type: correction.type,
+        corrected: correction.corrected,
+        reason: correction.reason
+      }
+    })
+    
+    currentPos = correction.position + correction.original.length
+  }
+  
+  // Add remaining text
+  if (currentPos < text.length) {
+    segments.push({
+      text: text.substring(currentPos)
+    })
+  }
+  
+  return { segments }
+}
+
+// Convert inline format to legacy format for backward compatibility
+export function convertInlineToLegacy(inline: InlineCorrectionData): CorrectionData {
+  let original = ''
+  let corrected = ''
+  const corrections: Correction[] = []
+  let currentPos = 0
+  
+  for (const segment of inline.segments) {
+    if (segment.correction) {
+      // This segment has a correction
+      original += segment.text
+      corrected += segment.correction.corrected
+      
+      corrections.push({
+        type: segment.correction.type,
+        original: segment.text,
+        corrected: segment.correction.corrected,
+        position: currentPos,
+        reason: segment.correction.reason
+      })
+      
+      currentPos += segment.text.length
+    } else {
+      // Regular text segment
+      original += segment.text
+      corrected += segment.text
+      currentPos += segment.text.length
+    }
+  }
+  
+  return { original, corrected, corrections }
+}
+
 export function parseCorrectionFromURL(): CorrectionData | null {
   const params = new URLSearchParams(window.location.search)
   
@@ -24,6 +98,14 @@ export function parseCorrectionFromURL(): CorrectionData | null {
     try {
       const decoded = base64Decode(data)
       const parsed = JSON.parse(decoded)
+      
+      // Check if it's the new inline format
+      if (parsed.segments && Array.isArray(parsed.segments)) {
+        // Convert inline format to legacy format for rendering
+        return convertInlineToLegacy(parsed as InlineCorrectionData)
+      }
+      
+      // Legacy format
       return {
         original: parsed.original || '',
         corrected: parsed.corrected || '',
@@ -55,53 +137,70 @@ export function parseCorrectionFromURL(): CorrectionData | null {
 }
 
 export function generateCorrectionURL(data: CorrectionData): string {
-  const encoded = base64Encode(JSON.stringify(data))
+  // Convert to inline format for URL generation
+  const inlineData = convertLegacyToInline(data)
+  const encoded = base64Encode(JSON.stringify(inlineData))
   const params = new URLSearchParams({ data: encoded })
   return `${window.location.origin}${window.location.pathname}?${params.toString()}`
 }
 
 export function generateExampleURL(): string {
-  const correctionData: CorrectionData = {
-    original: "helo world! This are a example of grammer corrections",
-    corrected: "Hello world! This is an example of grammar corrections.",
-    corrections: [
+  // Use inline format directly for the example
+  const inlineData: InlineCorrectionData = {
+    segments: [
       {
-        type: "spelling",
-        original: "helo",
-        corrected: "Hello",
-        position: 0,
-        reason: "Spelling error - correct spelling is 'Hello'"
+        text: "helo",
+        correction: {
+          type: "spelling",
+          corrected: "Hello",
+          reason: "Spelling error - correct spelling is 'Hello'"
+        }
       },
       {
-        type: "grammar",
-        original: "are",
-        corrected: "is",
-        position: 18,
-        reason: "Subject-verb agreement - singular 'This' requires 'is'"
+        text: " world! This "
       },
       {
-        type: "grammar",
-        original: "a",
-        corrected: "an",
-        position: 21,
-        reason: "Article correction - use 'an' before vowel sounds"
+        text: "are",
+        correction: {
+          type: "grammar",
+          corrected: "is",
+          reason: "Subject-verb agreement - singular 'This' requires 'is'"
+        }
       },
       {
-        type: "spelling",
-        original: "grammer",
-        corrected: "grammar",
-        position: 35,
-        reason: "Spelling error - correct spelling is 'grammar'"
+        text: " "
       },
       {
-        type: "punctuation",
-        original: "",
-        corrected: ".",
-        position: 54,
-        reason: "Sentence should end with a period"
+        text: "a",
+        correction: {
+          type: "grammar",
+          corrected: "an",
+          reason: "Article correction - use 'an' before vowel sounds"
+        }
+      },
+      {
+        text: " example of "
+      },
+      {
+        text: "grammer",
+        correction: {
+          type: "spelling",
+          corrected: "grammar",
+          reason: "Spelling error - correct spelling is 'grammar'"
+        }
+      },
+      {
+        text: " corrections",
+        correction: {
+          type: "punctuation",
+          corrected: " corrections.",
+          reason: "Sentence should end with a period"
+        }
       }
     ]
   }
   
-  return generateCorrectionURL(correctionData)
+  const encoded = base64Encode(JSON.stringify(inlineData))
+  const params = new URLSearchParams({ data: encoded })
+  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
 }
