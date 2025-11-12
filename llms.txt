@@ -1,0 +1,87 @@
+The grammar correction tool uses a URL-based data format to encode the original text, the corrected text, and the specific corrections made. The data is passed as a query parameter in the URL.
+
+There is one primary method for encoding the data:
+
+A single `data` parameter that contains a base64-encoded JSON string.
+
+## Data Structure
+
+The JSON object has the following structure:
+
+```json
+{
+  "original": "The original text.",
+  "corrected": "The corrected version of the text.",
+  "corrections": [
+    {
+      "type": "grammar" | "spelling" | "punctuation" | "word-choice" | "capitalization",
+      "original": "The incorrect word or phrase.",
+      "corrected": "The corrected word or phrase.",
+      "position": 0,
+      "reason": "An explanation of why the correction was made."
+    }
+  ]
+}
+```
+
+- `original`: The full original text.
+- `corrected`: The full text with all corrections applied.
+- `corrections`: An array of correction objects.
+
+### Correction Object
+
+- `type`: The category of the correction.
+- `original`: The specific word or phrase from the original text that was corrected. This can be an empty string for additions (e.g., adding punctuation).
+- `corrected`: The new word or phrase.
+- `position`: The 0-based index in the original string where the correction starts.
+- `reason`: A brief explanation for the correction.
+
+## Example
+
+Here is an example of a `CorrectionData` object:
+
+```json
+{
+  "original": "helo world! This are a example of grammer corrections",
+  "corrected": "Hello world! This is an example of grammar corrections.",
+  "corrections": [
+    {
+      "type": "spelling",
+      "original": "helo",
+      "corrected": "Hello",
+      "position": 0,
+      "reason": "Spelling error - correct spelling is 'Hello'"
+    },
+    {
+      "type": "grammar",
+      "original": "are",
+      "corrected": "is",
+      "position": 18,
+      "reason": "Subject-verb agreement - singular 'This' requires 'is'"
+    },
+    {
+      "type": "grammar",
+      "original": "a",
+      "corrected": "an",
+      "position": 21,
+      "reason": "Article correction - use 'an' before vowel sounds"
+    },
+    {
+      "type": "spelling",
+      "original": "grammer",
+      "corrected": "grammar",
+      "position": 35,
+      "reason": "Spelling error - correct spelling is 'grammar'"
+    },
+    {
+      "type": "punctuation",
+      "original": "",
+      "corrected": ".",
+      "position": 54,
+      "reason": "Sentence should end with a period"
+    }
+  ]
+}
+```
+
+This JSON object would be base64-encoded and appended to the URL as the `data` query parameter.
