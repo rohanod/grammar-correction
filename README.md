@@ -1,23 +1,66 @@
-# ✨ Welcome to Your Spark Template!
-You've just launched your brand-new Spark Template Codespace — everything’s fired up and ready for you to explore, build, and create with Spark!
+# Grammar Correction Viewer
 
-This template is your blank canvas. It comes with a minimal setup to help you get started quickly with Spark development.
+A web application that displays grammar corrections at the word and symbol level, comparing original text with corrected text through URL parameters, designed with a clean, educational interface.
 
-🚀 What's Inside?
-- A clean, minimal Spark environment
-- Pre-configured for local development
-- Ready to scale with your ideas
-  
-🧠 What Can You Do?
+## Features
 
-Right now, this is just a starting point — the perfect place to begin building and testing your Spark applications.
+- **URL Parameter Parsing**: Share corrections via URL with base64-encoded data
+- **Word-Level Diff Display**: Toggle between original and corrected text with highlighting
+- **Interactive Corrections**: Hover over corrections to see detailed information
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
 
-🧹 Just Exploring?
-No problem! If you were just checking things out and don’t need to keep this code:
+## Getting Started
 
-- Simply delete your Spark.
-- Everything will be cleaned up — no traces left behind.
+### Development
 
-📄 License For Spark Template Resources 
+```bash
+npm install
+npm run dev
+```
 
-The Spark Template files and resources from GitHub are licensed under the terms of the MIT license, Copyright GitHub, Inc.
+### Build
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Usage
+
+The application accepts correction data via URL parameters:
+
+```
+?data=<base64-encoded-json>
+```
+
+The JSON structure should contain:
+- `original`: The original text
+- `corrected`: The corrected text
+- `corrections`: Array of correction objects with details
+
+## Tech Stack
+
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Radix UI Components
+- Framer Motion
+
+## Deployment
+
+This application can be deployed to any static hosting service that supports single-page applications:
+
+- Vercel
+- Netlify
+- GitHub Pages
+- Cloudflare Pages
+- AWS S3 + CloudFront
+- And more...
+
+Simply build the project and deploy the `dist` folder.
