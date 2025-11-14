@@ -1,4 +1,5 @@
-import { CorrectionData } from './types'
+import { CorrectionData, InlineCorrectionData } from './types'
+import { normalizeToLegacy } from './format-converter'
 
 function base64Decode(str: string): string {
   try {
@@ -23,17 +24,17 @@ export function parseCorrectionFromURL(): CorrectionData | null {
   if (data) {
     try {
       const decoded = base64Decode(data)
-      const parsed = JSON.parse(decoded)
-      return {
-        original: parsed.original || '',
-        corrected: parsed.corrected || '',
-        corrections: parsed.corrections || []
-      }
+      const parsed: CorrectionData | InlineCorrectionData = JSON.parse(decoded)
+      
+      // Normalize to legacy format for backward compatibility
+      // The new inline format will be automatically converted
+      return normalizeToLegacy(parsed)
     } catch (error) {
       console.error('Failed to parse data parameter:', error)
     }
   }
   
+  // Legacy URL format support
   const original = params.get('original')
   const correctionsParam = params.get('corrections')
   
@@ -61,47 +62,57 @@ export function generateCorrectionURL(data: CorrectionData): string {
 }
 
 export function generateExampleURL(): string {
-  const correctionData: CorrectionData = {
-    original: "helo world! This are a example of grammer corrections",
-    corrected: "Hello world! This is an example of grammar corrections.",
-    corrections: [
+  // Use the new inline format for the example
+  const inlineData: InlineCorrectionData = {
+    segments: [
       {
-        type: "spelling",
-        original: "helo",
-        corrected: "Hello",
-        position: 0,
-        reason: "Spelling error - correct spelling is 'Hello'"
+        text: "helo",
+        correction: {
+          corrected: "Hello",
+          type: "spelling",
+          reason: "Spelling error - correct spelling is 'Hello'"
+        }
       },
+      { text: " world! This " },
       {
-        type: "grammar",
-        original: "are",
-        corrected: "is",
-        position: 18,
-        reason: "Subject-verb agreement - singular 'This' requires 'is'"
+        text: "are",
+        correction: {
+          corrected: "is",
+          type: "grammar",
+          reason: "Subject-verb agreement - singular 'This' requires 'is'"
+        }
       },
+      { text: " " },
       {
-        type: "grammar",
-        original: "a",
-        corrected: "an",
-        position: 21,
-        reason: "Article correction - use 'an' before vowel sounds"
+        text: "a",
+        correction: {
+          corrected: "an",
+          type: "grammar",
+          reason: "Article correction - use 'an' before vowel sounds"
+        }
       },
+      { text: " example of " },
       {
-        type: "spelling",
-        original: "grammer",
-        corrected: "grammar",
-        position: 35,
-        reason: "Spelling error - correct spelling is 'grammar'"
+        text: "grammer",
+        correction: {
+          corrected: "grammar",
+          type: "spelling",
+          reason: "Spelling error - correct spelling is 'grammar'"
+        }
       },
+      { text: " corrections" },
       {
-        type: "punctuation",
-        original: "",
-        corrected: ".",
-        position: 54,
-        reason: "Sentence should end with a period"
+        text: "",
+        correction: {
+          corrected: ".",
+          type: "punctuation",
+          reason: "Sentence should end with a period"
+        }
       }
     ]
   }
   
-  return generateCorrectionURL(correctionData)
+  const encoded = base64Encode(JSON.stringify(inlineData))
+  const params = new URLSearchParams({ data: encoded })
+  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
 }
