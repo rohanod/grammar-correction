@@ -17,16 +17,17 @@ You must output:
 - No explanations.
 - No surrounding text.
 - Only the url and corrected text.
+- If there are no corrections to make, respond with: "There is no change needed. Would you like me to try to find a way to make it even better?"
 
 === Building the Inline JSON Payload ===
 
 Construct this JSON object:
 {
-  "text": "Text with {{original->corrected|type|reason}} inline corrections"
+  "text": "Text with {{original-corrected|type|reason}} inline corrections"
 }
 
 Insert inline corrections wherever needed using:
-{{original->corrected|type|reason}}
+{{original-corrected|type|reason}}
 
 original: incorrect text (empty for insertions)
 corrected: corrected text (empty for deletions)

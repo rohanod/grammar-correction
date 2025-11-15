@@ -36,11 +36,11 @@ Provide correction data through a single `?data=<base64-encoded-json>` query par
 
 ```
 {
-  "text": "Text with {{original->corrected|type|reason}} inline corrections"
+  "text": "Text with {{original-corrected|type|reason}} inline corrections"
 }
 ```
 
-Each inline correction follows `{{original->corrected|type|reason}}` where:
+Each inline correction follows `{{original-corrected|type|reason}}` where:
 
 - `original`: the mistake (empty for insertions)
 - `corrected`: the fix (empty for deletions)
@@ -50,7 +50,7 @@ Each inline correction follows `{{original->corrected|type|reason}}` where:
 Example inline string:
 
 ```
-{{helo->Hello|spelling|Correct spelling}} world! This {{are->is|grammar|Subject-verb agreement}} {{a->an|grammar|Article before a vowel}} example {{grammer->grammar|spelling}} corrections{{->.|punctuation|Add period}}
+{{helo-Hello|spelling|Correct spelling}} world! This {{are-is|grammar|Subject-verb agreement}} {{a-an|grammar|Article before a vowel}} example {{grammer-grammar|spelling}} corrections{{-.|punctuation|Add period}}
 ```
 
 Encode the JSON payload (including the `text` property) with base64 and append it to `?data=`.

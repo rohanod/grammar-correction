@@ -18,8 +18,8 @@ function base64Encode(str: string): string {
 
 /**
  * Parse inline format text to CorrectionData
- * Format: {{original->corrected|type|reason}}
- * Example: "{{helo->Hello|spelling|Spelling error}} world"
+ * Format: {{original-corrected|type|reason}}
+ * Example: "{{helo-Hello|spelling|Spelling error}} world"
  */
 function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
   const text = inlineData.text
@@ -28,8 +28,8 @@ function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
   let correctedText = ''
   let position = 0
   
-  // Regex to match {{original->corrected|type|reason}}
-  const correctionRegex = /\{\{([^|]*?)->([^|]*?)\|([^|]*?)(?:\|([^}]*?))?\}\}/g
+  // Regex to match {{original-corrected|type|reason}}
+  const correctionRegex = /\{\{([^|]*?)-([^|]*?)\|([^|]*?)(?:\|([^}]*?))?\}\}/g
   
   let lastIndex = 0
   let match: RegExpExecArray | null
@@ -114,7 +114,7 @@ export function generateCorrectionURL(data: CorrectionData): string {
 export function generateExampleURL(): string {
   // Use the new inline format for LLM-friendly generation
   const inlineData: InlineFormatData = {
-    text: "{{helo->Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are->is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a->an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer->grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{->.|punctuation|Sentence should end with a period}}"
+    text: "{{helo-Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are-is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a-an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer-grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{-.|punctuation|Sentence should end with a period}}"
   }
   
   const encoded = base64Encode(JSON.stringify(inlineData))
