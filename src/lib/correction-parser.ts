@@ -78,47 +78,31 @@ function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
 
 export function parseCorrectionFromURL(): CorrectionData | null {
   const params = new URLSearchParams(window.location.search)
-  
+
   const data = params.get('data')
-  if (data) {
-    try {
-      const decoded = base64Decode(data)
-      const parsed = JSON.parse(decoded)
-      
-      // Check if it's the new inline format
-      if (parsed.text && typeof parsed.text === 'string') {
-        return parseInlineFormat(parsed as InlineFormatData)
-      }
-      
-      // Otherwise, use the old format
-      return {
-        original: parsed.original || '',
-        corrected: parsed.corrected || '',
-        corrections: parsed.corrections || []
-      }
-    } catch (error) {
-      console.error('Failed to parse data parameter:', error)
-    }
-  }
-  
-  const original = params.get('original')
-  const correctionsParam = params.get('corrections')
-  
-  if (!original || !correctionsParam) {
+  if (!data) {
     return null
   }
-  
+
   try {
-    const corrections = JSON.parse(decodeURIComponent(correctionsParam))
-    return {
-      original: decodeURIComponent(original),
-      corrected: corrections.corrected || '',
-      corrections: corrections.corrections || []
+    const decoded = base64Decode(data)
+    const parsed = JSON.parse(decoded)
+
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'text' in parsed &&
+      typeof (parsed as InlineFormatData).text === 'string'
+    ) {
+      return parseInlineFormat(parsed as InlineFormatData)
     }
+
+    console.error('Invalid data format, expected inline text payload')
   } catch (error) {
-    console.error('Failed to parse correction data:', error)
-    return null
+    console.error('Failed to parse data parameter:', error)
   }
+
+  return null
 }
 
 export function generateCorrectionURL(data: CorrectionData): string {
