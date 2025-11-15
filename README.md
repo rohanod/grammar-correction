@@ -32,16 +32,28 @@ npm run preview
 
 ## Usage
 
-The application accepts correction data via URL parameters:
+Provide correction data through a single `?data=<base64-encoded-json>` query parameter. The JSON must use the inline format so each correction stays close to the text it modifies:
 
 ```
-?data=<base64-encoded-json>
+{
+  "text": "Text with {{original->corrected|type|reason}} inline corrections"
+}
 ```
 
-The JSON structure should contain:
-- `original`: The original text
-- `corrected`: The corrected text
-- `corrections`: Array of correction objects with details
+Each inline correction follows `{{original->corrected|type|reason}}` where:
+
+- `original`: the mistake (empty for insertions)
+- `corrected`: the fix (empty for deletions)
+- `type`: one of `grammar`, `spelling`, `punctuation`, `word-choice`, `capitalization`
+- `reason`: (optional) explanation for the correction
+
+Example inline string:
+
+```
+{{helo->Hello|spelling|Correct spelling}} world! This {{are->is|grammar|Subject-verb agreement}} {{a->an|grammar|Article before a vowel}} example {{grammer->grammar|spelling}} corrections{{->.|punctuation|Add period}}
+```
+
+Encode the JSON payload (including the `text` property) with base64 and append it to `?data=`.
 
 ## Tech Stack
 

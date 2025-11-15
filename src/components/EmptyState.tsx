@@ -37,9 +37,9 @@ export function EmptyState() {
               <AlertDescription className="text-xs md:text-sm leading-relaxed">
                 <div className="font-medium mb-2">How to use:</div>
                 <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Create a JSON object with original text, corrected text, and corrections</li>
-                  <li>Base64 encode the JSON and pass it as a URL parameter</li>
-                  <li>Format: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">?data=&lt;base64&gt;</code></li>
+                  <li>Write your text with inline corrections using <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{{original->corrected|type|reason}}'}</code></li>
+                  <li>Wrap the resulting string in JSON: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{ "text": "..." }'}</code></li>
+                  <li>Base64 encode the JSON and append it as <code className="bg-muted px-1.5 py-0.5 rounded text-xs">?data=&lt;base64&gt;</code></li>
                 </ol>
               </AlertDescription>
             </Alert>
@@ -63,17 +63,7 @@ export function EmptyState() {
               <p className="text-xs font-medium text-foreground mb-2">Expected JSON structure:</p>
               <pre className="text-left text-[10px] md:text-xs text-muted-foreground overflow-x-auto">
 {`{
-  "original": "Text with errors",
-  "corrected": "Text with corrections",
-  "corrections": [
-    {
-      "type": "grammar",
-      "original": "wrong",
-      "corrected": "right",
-      "position": 0,
-      "reason": "Explanation"
-    }
-  ]
+  "text": "{{helo->Hello|spelling|Correct spelling}} world! This {{are->is|grammar}} example {{grammer->grammar|spelling}} corrections{{->.|punctuation}}"
 }`}
               </pre>
               <p className="text-[10px] md:text-xs text-muted-foreground mt-2">

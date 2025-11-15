@@ -13,3 +13,8 @@ export interface CorrectionData {
   corrected: string
   corrections: Correction[]
 }
+
+// New inline format for LLM-friendly generation
+export interface InlineFormatData {
+  text: string
+}

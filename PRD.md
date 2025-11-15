@@ -13,11 +13,11 @@ A web application that displays grammar corrections at the word and symbol level
 ## Essential Features
 
 ### URL Parameter Parsing
-- **Functionality**: Parse URL parameter containing base64-encoded correction data
-- **Purpose**: Allow shareable links with embedded correction information using a clean, simple format
-- **Trigger**: Page load with URL parameter `?data=<base64>` (legacy format `?original=text&corrections=data` also supported)
-- **Progression**: Load page → Parse URL params → Base64 decode data → Parse JSON → Render comparison view
-- **Success criteria**: Correctly handles encoded data and displays all corrections accurately with backwards compatibility
+- **Functionality**: Parse the inline correction payload embedded in the `data` query parameter
+- **Purpose**: Allow shareable links where corrections stay next to the text they modify
+- **Trigger**: Page load with URL parameter `?data=<base64>` containing `{ "text": "..." }`
+- **Progression**: Load page → Parse `data` → Base64 decode → Parse JSON text → Build corrections → Render comparison view
+- **Success criteria**: Inline corrections render accurately with the same ordering and explanations provided in the source string
 
 ### Word-Level Diff Display with Toggle
 - **Functionality**: Show original or corrected text with word-by-word highlighting and ability to toggle between views
