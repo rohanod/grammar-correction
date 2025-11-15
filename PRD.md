@@ -17,7 +17,21 @@ A web application that displays grammar corrections at the word and symbol level
 - **Purpose**: Allow shareable links where corrections stay next to the text they modify
 - **Trigger**: Page load with URL parameter `?data=<base64>` containing `{ "text": "..." }`
 - **Progression**: Load page → Parse `data` → Base64 decode → Parse JSON text → Build corrections → Render comparison view
-- **Success criteria**: Inline corrections render accurately with the same ordering and explanations provided in the source string
+- **Payload format**: The JSON object must have a `text` property whose value contains inline markup using the hyphen-based format `{{original-corrected|type|reason}}`
+  - `original`: incorrect text (empty for insertions)
+  - `corrected`: replacement text (empty for deletions)
+  - `type`: `grammar`, `spelling`, `punctuation`, `word-choice`, or `capitalization`
+  - `reason`: optional explanation surfaced in the UI
+- **Success criteria**: Inline corrections render accurately with the same ordering and explanations provided in the source string; malformed payloads produce readable errors instead of crashes
+
+### Inline Payload + URL Generation Workflow
+- **Functionality**: Provide deterministic instructions (consumed by LLM/code-interpreter automations) for building, encoding, and sharing corrections
+- **Process**:
+  1. Insert inline corrections directly inside the text using the hyphen format (example: `{{helo-Hello|spelling|Correct spelling}} world`).
+  2. Wrap the string in JSON `{ "text": "<inline text>" }`.
+  3. Base64-encode the JSON and append it to `https://rohanod.github.io/grammar-correction/?data=<base64>`.
+- **Automation requirements**: LLMs should output only the final URL and corrected text, relying on the code interpreter to avoid transcription errors.
+- **Success criteria**: Copying the generated URL immediately loads the same corrections inside the viewer, and helper docs (README, `llms.txt`, empty state) stay fully aligned.
 
 ### Word-Level Diff Display with Toggle
 - **Functionality**: Show original or corrected text with word-by-word highlighting and ability to toggle between views
@@ -30,23 +44,24 @@ A web application that displays grammar corrections at the word and symbol level
 - **Functionality**: Click or hover on corrections to see detailed information
 - **Purpose**: Provide context and explanation for each correction
 - **Trigger**: User interaction with highlighted text
-- **Progression**: Hover/click correction → Show tooltip/popover → Display correction type and details
+- **Progression**: Hover/click correction → Show tooltip/popover → Display correction type and details; desktop relies on hover/focus popovers while mobile devices open a dialog sheet after a tap
 - **Success criteria**: Smooth interactions with clear, helpful information
 
 ### Empty State
 - **Functionality**: Welcoming interface when no URL parameters present
 - **Purpose**: Guide users on how to use the application
 - **Trigger**: Page load without valid parameters
-- **Progression**: Show empty state → Display usage instructions → Provide example link
+- **Progression**: Show empty state → Display inline-format instructions + JSON sample → Provide `Try Example` button that calls `generateExampleURL()` and navigates the user
 - **Success criteria**: Users understand how to use the tool
 
 ## Edge Case Handling
 
 - **Invalid URL Parameters**: Display friendly error message with format guidance
-- **Malformed JSON**: Gracefully handle parsing errors with clear feedback
+- **Malformed JSON or Inline Markers**: Gracefully handle parsing errors with clear feedback, asking for the `{ "text": "..." }` payload that uses `{{original-corrected|type|reason}}`
 - **Very Long Text**: Implement scrollable containers to handle lengthy paragraphs
 - **No Corrections**: Display message indicating text is already correct
 - **Special Characters**: Properly encode/decode special characters and symbols
+- **Unsupported Types**: Default to muted styling when unknown correction types appear, but log an error for follow-up
 
 ## Design Direction
 
