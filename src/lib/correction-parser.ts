@@ -1,4 +1,4 @@
-import { CorrectionData } from './types'
+import { CorrectionData, InlineFormatData, Correction, CorrectionType } from './types'
 
 function base64Decode(str: string): string {
   try {
@@ -16,6 +16,66 @@ function base64Encode(str: string): string {
   ))
 }
 
+/**
+ * Parse inline format text to CorrectionData
+ * Format: {{original->corrected|type|reason}}
+ * Example: "{{helo->Hello|spelling|Spelling error}} world"
+ */
+function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
+  const text = inlineData.text
+  const corrections: Correction[] = []
+  let originalText = ''
+  let correctedText = ''
+  let position = 0
+  
+  // Regex to match {{original->corrected|type|reason}}
+  const correctionRegex = /\{\{([^|]*?)->([^|]*?)\|([^|]*?)(?:\|([^}]*?))?\}\}/g
+  
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  
+  while ((match = correctionRegex.exec(text)) !== null) {
+    // Add text before the correction
+    const beforeText = text.substring(lastIndex, match.index)
+    originalText += beforeText
+    correctedText += beforeText
+    
+    const original = match[1]
+    const corrected = match[2]
+    const type = match[3] as CorrectionType
+    const reason = match[4] || undefined
+    
+    // Position is where the correction starts in the original text
+    const correctionPosition = originalText.length
+    
+    // Add correction to the list
+    corrections.push({
+      type,
+      original,
+      corrected,
+      position: correctionPosition,
+      reason
+    })
+    
+    // Update texts
+    originalText += original
+    correctedText += corrected
+    
+    lastIndex = correctionRegex.lastIndex
+  }
+  
+  // Add any remaining text after the last correction
+  const remainingText = text.substring(lastIndex)
+  originalText += remainingText
+  correctedText += remainingText
+  
+  return {
+    original: originalText,
+    corrected: correctedText,
+    corrections
+  }
+}
+
 export function parseCorrectionFromURL(): CorrectionData | null {
   const params = new URLSearchParams(window.location.search)
   
@@ -24,6 +84,13 @@ export function parseCorrectionFromURL(): CorrectionData | null {
     try {
       const decoded = base64Decode(data)
       const parsed = JSON.parse(decoded)
+      
+      // Check if it's the new inline format
+      if (parsed.text && typeof parsed.text === 'string') {
+        return parseInlineFormat(parsed as InlineFormatData)
+      }
+      
+      // Otherwise, use the old format
       return {
         original: parsed.original || '',
         corrected: parsed.corrected || '',
@@ -61,47 +128,12 @@ export function generateCorrectionURL(data: CorrectionData): string {
 }
 
 export function generateExampleURL(): string {
-  const correctionData: CorrectionData = {
-    original: "helo world! This are a example of grammer corrections",
-    corrected: "Hello world! This is an example of grammar corrections.",
-    corrections: [
-      {
-        type: "spelling",
-        original: "helo",
-        corrected: "Hello",
-        position: 0,
-        reason: "Spelling error - correct spelling is 'Hello'"
-      },
-      {
-        type: "grammar",
-        original: "are",
-        corrected: "is",
-        position: 18,
-        reason: "Subject-verb agreement - singular 'This' requires 'is'"
-      },
-      {
-        type: "grammar",
-        original: "a",
-        corrected: "an",
-        position: 21,
-        reason: "Article correction - use 'an' before vowel sounds"
-      },
-      {
-        type: "spelling",
-        original: "grammer",
-        corrected: "grammar",
-        position: 35,
-        reason: "Spelling error - correct spelling is 'grammar'"
-      },
-      {
-        type: "punctuation",
-        original: "",
-        corrected: ".",
-        position: 54,
-        reason: "Sentence should end with a period"
-      }
-    ]
+  // Use the new inline format for LLM-friendly generation
+  const inlineData: InlineFormatData = {
+    text: "{{helo->Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are->is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a->an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer->grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{->.|punctuation|Sentence should end with a period}}"
   }
   
-  return generateCorrectionURL(correctionData)
+  const encoded = base64Encode(JSON.stringify(inlineData))
+  const params = new URLSearchParams({ data: encoded })
+  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
 }

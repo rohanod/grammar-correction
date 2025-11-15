@@ -4,9 +4,44 @@ There is one primary method for encoding the data:
 
 A single `data` parameter that contains a base64-encoded JSON string.
 
-## Data Structure
+## Inline Format (Recommended for LLMs)
 
-The JSON object has the following structure:
+The inline format embeds corrections directly in the text, making it much easier for LLMs to generate without calculating character positions.
+
+### Structure
+
+```json
+{
+  "text": "Text with {{original->corrected|type|reason}} inline corrections"
+}
+```
+
+### Inline Correction Syntax
+
+Each correction is embedded using the format: `{{original->corrected|type|reason}}`
+
+- `original`: The incorrect word or phrase (can be empty for additions)
+- `corrected`: The corrected word or phrase (can be empty for deletions)
+- `type`: One of: `grammar`, `spelling`, `punctuation`, `word-choice`, `capitalization`
+- `reason`: (Optional) A brief explanation of why the correction was made
+
+### Example
+
+```json
+{
+  "text": "{{helo->Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are->is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a->an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer->grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{->.|punctuation|Sentence should end with a period}}"
+}
+```
+
+This format is much more LLM-friendly because:
+- No need to calculate character positions
+- Corrections are inline with the text they modify
+- Easy to see context around each correction
+- Simple to generate sequentially while processing text
+
+## Legacy Position-Based Format (Still Supported)
+
+The position-based format is still supported for backward compatibility:
 
 ```json
 {
@@ -24,11 +59,7 @@ The JSON object has the following structure:
 }
 ```
 
-- `original`: The full original text.
-- `corrected`: The full text with all corrections applied.
-- `corrections`: An array of correction objects.
-
-### Correction Object
+### Legacy Correction Object
 
 - `type`: The category of the correction.
 - `original`: The specific word or phrase from the original text that was corrected. This can be an empty string for additions (e.g., adding punctuation).
@@ -36,9 +67,7 @@ The JSON object has the following structure:
 - `position`: The 0-based index in the original string where the correction starts.
 - `reason`: A brief explanation for the correction.
 
-## Example
-
-Here is an example of a `CorrectionData` object:
+### Legacy Example
 
 ```json
 {
@@ -84,4 +113,6 @@ Here is an example of a `CorrectionData` object:
 }
 ```
 
-This JSON object would be base64-encoded and appended to the URL as the `data` query parameter.
+## URL Encoding
+
+Both formats should be base64-encoded and appended to the URL as the `data` query parameter.
