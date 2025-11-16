@@ -39,7 +39,7 @@ export function EmptyState() {
                 <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
                   <li>Write your text with inline corrections using <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{{original-corrected|type|reason}}'}</code></li>
                   <li>Wrap the resulting string in JSON: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{ "text": "..." }'}</code></li>
-                  <li>Base64 encode the JSON and append it as <code className="bg-muted px-1.5 py-0.5 rounded text-xs">?data=&lt;base64&gt;</code></li>
+                  <li>Either paste that JSON in the input above or base64 encode it and append it as <code className="bg-muted px-1.5 py-0.5 rounded text-xs">?data=&lt;base64&gt;</code></li>
                 </ol>
               </AlertDescription>
             </Alert>
@@ -67,7 +67,7 @@ export function EmptyState() {
 }`}
               </pre>
               <p className="text-[10px] md:text-xs text-muted-foreground mt-2">
-                Base64 encode this JSON and pass as <code className="bg-muted px-1 py-0.5 rounded">?data=...</code>
+                Paste this JSON above or base64 encode it and pass as <code className="bg-muted px-1 py-0.5 rounded">?data=...</code>
               </p>
             </div>
           </div>

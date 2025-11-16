@@ -1,8 +1,8 @@
 import { CorrectionData, InlineFormatData, Correction, CorrectionType } from './types'
 
-function base64Decode(str: string): string {
+export function base64Decode(str: string): string {
   try {
-    return decodeURIComponent(atob(str).split('').map(c => 
+    return decodeURIComponent(atob(str).split('').map(c =>
       '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
     ).join(''))
   } catch {
@@ -10,7 +10,7 @@ function base64Decode(str: string): string {
   }
 }
 
-function base64Encode(str: string): string {
+export function base64Encode(str: string): string {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
     String.fromCharCode(parseInt(p1, 16))
   ))
@@ -76,6 +76,31 @@ function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
   }
 }
 
+function convertPayloadToCorrectionData(payload: unknown): CorrectionData {
+  if (
+    typeof payload === 'object' &&
+    payload !== null &&
+    'text' in payload &&
+    typeof (payload as InlineFormatData).text === 'string'
+  ) {
+    return parseInlineFormat(payload as InlineFormatData)
+  }
+
+  throw new Error('Invalid data format, expected inline text payload')
+}
+
+export function parseInlineJSON(jsonString: string): CorrectionData {
+  try {
+    const parsed = JSON.parse(jsonString)
+    return convertPayloadToCorrectionData(parsed)
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new Error('Invalid JSON structure. Please ensure it is valid JSON text.')
+    }
+    throw error instanceof Error ? error : new Error('Unable to parse inline payload')
+  }
+}
+
 export function parseCorrectionFromURL(): CorrectionData | null {
   const params = new URLSearchParams(window.location.search)
 
@@ -86,18 +111,7 @@ export function parseCorrectionFromURL(): CorrectionData | null {
 
   try {
     const decoded = base64Decode(data)
-    const parsed = JSON.parse(decoded)
-
-    if (
-      typeof parsed === 'object' &&
-      parsed !== null &&
-      'text' in parsed &&
-      typeof (parsed as InlineFormatData).text === 'string'
-    ) {
-      return parseInlineFormat(parsed as InlineFormatData)
-    }
-
-    console.error('Invalid data format, expected inline text payload')
+    return parseInlineJSON(decoded)
   } catch (error) {
     console.error('Failed to parse data parameter:', error)
   }
