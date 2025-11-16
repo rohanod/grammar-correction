@@ -139,3 +139,11 @@ Subtle and purposeful animations that guide attention to corrections without bei
   - Larger touch targets (min 44px)
   - Stacked comparison views instead of side-by-side
   - Simplified tooltips that work well on touch devices
+
+## Documentation & tests
+- When you change the parsing rules, inline format, or any public-facing behavior, update this `PRD.md` with a short explanation of why the change was made and any UX or URL-format implications.
+- Add a short `Testing` subsection listing which unit tests should be added; the repository currently lacks tests but the expected areas are:
+  - parser and base64 encoding/decoding
+  - tokenization and whitespace handling in `TextWithHighlights`
+  - UI interaction differences between mobile and desktop (tooltips vs dialog)
+- You may scaffold tests by creating `tests/` and adding `describe.todo` stubs with instructions; this helps hand off test creation to a future PR.
