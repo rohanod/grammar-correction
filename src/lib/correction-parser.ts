@@ -1,8 +1,8 @@
 import { CorrectionData, InlineFormatData, Correction, CorrectionType } from './types'
 
-function base64Decode(str: string): string {
+export function base64Decode(str: string): string {
   try {
-    return decodeURIComponent(atob(str).split('').map(c => 
+    return decodeURIComponent(atob(str).split('').map(c =>
       '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
     ).join(''))
   } catch {
@@ -10,10 +10,15 @@ function base64Decode(str: string): string {
   }
 }
 
-function base64Encode(str: string): string {
+export function base64Encode(str: string): string {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
     String.fromCharCode(parseInt(p1, 16))
   ))
+}
+
+function getDocsPath() {
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
+  return `${base}/docs`
 }
 
 /**
@@ -108,7 +113,8 @@ export function parseCorrectionFromURL(): CorrectionData | null {
 export function generateCorrectionURL(data: CorrectionData): string {
   const encoded = base64Encode(JSON.stringify(data))
   const params = new URLSearchParams({ data: encoded })
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
+  const docsPath = getDocsPath()
+  return `${window.location.origin}${docsPath}?${params.toString()}`
 }
 
 export function generateExampleURL(): string {
@@ -116,8 +122,9 @@ export function generateExampleURL(): string {
   const inlineData: InlineFormatData = {
     text: "{{helo-Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are-is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a-an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer-grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{-.|punctuation|Sentence should end with a period}}"
   }
-  
+
   const encoded = base64Encode(JSON.stringify(inlineData))
   const params = new URLSearchParams({ data: encoded })
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
+  const docsPath = getDocsPath()
+  return `${window.location.origin}${docsPath}?${params.toString()}`
 }

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -44,20 +45,24 @@ export function EmptyState() {
               </AlertDescription>
             </Alert>
 
-            <div className="flex flex-col gap-3 w-full">
-              <Button 
-                onClick={handleTryExample} 
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
-              >
-                Try Example
-                <ArrowRight size={20} weight="bold" className="ml-2" />
-              </Button>
-              
-              <p className="text-xs text-muted-foreground">
-                Click to see a sample correction in action
-              </p>
-            </div>
+          <div className="flex flex-col gap-3 w-full">
+            <Button
+              onClick={handleTryExample}
+              size="lg"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
+            >
+              Try Example
+              <ArrowRight size={20} weight="bold" className="ml-2" />
+            </Button>
+
+            <p className="text-xs text-muted-foreground">
+              Click to see a sample correction in action
+            </p>
+
+            <Button variant="outline" asChild size="sm" className="mt-1">
+              <Link to="/">Build a payload at input</Link>
+            </Button>
+          </div>
 
             <div className="mt-2 md:mt-4 p-3 md:p-4 bg-muted/30 rounded-lg w-full">
               <p className="text-xs font-medium text-foreground mb-2">Expected JSON structure:</p>
