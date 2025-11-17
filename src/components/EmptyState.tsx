@@ -59,9 +59,6 @@ export function EmptyState() {
               Click to see a sample correction in action
             </p>
 
-            <Button variant="outline" asChild size="sm" className="mt-1">
-              <Link to="/">Build a payload at input</Link>
-            </Button>
           </div>
 
             <div className="mt-2 md:mt-4 p-3 md:p-4 bg-muted/30 rounded-lg w-full">
