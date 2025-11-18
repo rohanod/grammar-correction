@@ -7,19 +7,11 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { generateExampleURL, base64Encode } from '@/lib/correction-parser'
-
-const exampleJson = JSON.stringify(
-  {
-    text: "The main message of Source A is  that The Treaty of Versailles should {{demilitaries-demilitarise|spelling|correct verb form}} {{germany-England|capitalization|proper noun}}."
-  },
-  null,
-  2,
-)
+import { base64Encode } from '@/lib/correction-parser'
 
 export function PayloadInputPage() {
   const navigate = useNavigate()
-  const [jsonInput, setJsonInput] = useState(exampleJson)
+  const [jsonInput, setJsonInput] = useState('')
   const [base64Input, setBase64Input] = useState('')
   const [jsonError, setJsonError] = useState('')
   const [base64Error, setBase64Error] = useState('')
@@ -77,13 +69,9 @@ export function PayloadInputPage() {
     navigate(`/docs?${params.toString()}`)
   }
 
-  const handleExample = () => {
-    window.location.href = generateExampleURL()
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="max-w-4xl mx-auto px-4 py-10 md:py-16 space-y-8">
+      <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-16 space-y-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -95,30 +83,33 @@ export function PayloadInputPage() {
             Paste inline correction JSON to open the viewer, or use a base64-encoded payload if you already have one ready.
           </p>
           <div className="flex items-center justify-center gap-3 text-sm">
-            <span className="text-muted-foreground">Looking for the viewer?</span>
+            <span className="text-muted-foreground">Don't know how to use this?</span>
             <Button variant="outline" asChild size="sm">
               <Link to="/docs">Go to docs</Link>
             </Button>
           </div>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2">
           <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             onSubmit={handleJsonSubmit}
           >
-            <Card className="p-5 h-full flex flex-col gap-4">
+            <Card className="p-6 h-full flex flex-col gap-5">
               <div>
                 <h2 className="text-xl font-semibold">Plain JSON payload</h2>
-                <p className="text-sm text-muted-foreground">Paste your inline correction JSON directly.</p>
+                <p className="text-sm text-muted-foreground space-y-1">
+                  <span className="block">Paste your inline correction JSON directly.</span>
+                  <span className="block">Enter a base64 payload to decode and continue to the viewer.</span>
+                </p>
               </div>
               <div className="space-y-2 flex-1">
                 <Label htmlFor="json-payload">Payload</Label>
                 <Textarea
                   id="json-payload"
-                  className="min-h-[240px] font-mono text-sm"
+                  className="min-h-[280px] font-mono text-sm"
                   value={jsonInput}
                   onChange={(event) => setJsonInput(event.target.value)}
                 />
@@ -134,7 +125,7 @@ export function PayloadInputPage() {
             transition={{ delay: 0.2 }}
             onSubmit={handleBase64Submit}
           >
-            <Card className="p-5 h-full flex flex-col gap-4">
+            <Card className="p-6 h-full flex flex-col gap-5">
               <div className="space-y-3">
                 <div>
                   <h2 className="text-xl font-semibold">Base64 payload</h2>
@@ -144,7 +135,7 @@ export function PayloadInputPage() {
                   <Label htmlFor="base64-payload">Base64 string</Label>
                   <Textarea
                     id="base64-payload"
-                    className="min-h-[160px] font-mono text-sm"
+                    className="min-h-[200px] font-mono text-sm"
                     value={base64Input}
                     onChange={(event) => setBase64Input(event.target.value)}
                     placeholder="eyJ0ZXh0Ijog..."
@@ -153,7 +144,7 @@ export function PayloadInputPage() {
                 </div>
                 <Alert>
                   <AlertDescription className="text-sm">
-                    {base64Preview ? 'Decoded preview:' : 'Enter a base64 payload to decode and continue to the viewer.'}
+                    {base64Preview ? 'Decoded preview:' : 'Decoded content will appear here.'}
                   </AlertDescription>
                 </Alert>
                 {base64Preview && (
@@ -161,12 +152,7 @@ export function PayloadInputPage() {
                     {base64Preview}
                   </pre>
                 )}
-                <div className="flex flex-col gap-2">
-                  <Button type="submit" variant="secondary" className="w-full">View corrections</Button>
-                  <Button type="button" variant="ghost" onClick={handleExample}>
-                    Load sample payload
-                  </Button>
-                </div>
+                <Button type="submit" variant="secondary" className="w-full">View corrections</Button>
               </div>
             </Card>
           </motion.form>
