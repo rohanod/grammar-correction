@@ -5,6 +5,7 @@ export interface Correction {
   original: string
   corrected: string
   position: number
+  correctedPosition: number
   reason?: string
 }
 

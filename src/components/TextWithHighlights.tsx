@@ -64,42 +64,51 @@ function getCorrectionLabel(type: CorrectionType): string {
 }
 
 export function TextWithHighlights({ text, corrections, showCorrected }: TextWithHighlightsProps) {
-  const words = text.split(/(\s+)/)
-  let currentPosition = 0
+  const sortedCorrections = [...corrections]
+    .map(correction => ({
+      correction,
+      start: showCorrected ? correction.correctedPosition : correction.position,
+      length: showCorrected ? correction.corrected.length : correction.original.length,
+    }))
+    .sort((a, b) => a.start - b.start)
+
   const elements: React.ReactElement[] = []
+  let cursor = 0
 
-  words.forEach((word, index) => {
-    const wordStart = currentPosition
-    const wordEnd = currentPosition + word.length
-    
-    const correctionInRange = corrections.find(c => {
-      const searchTerm = showCorrected ? c.corrected : c.original
-      return c.position >= wordStart && c.position < wordEnd && word.includes(searchTerm)
-    })
+  sortedCorrections.forEach((item, index) => {
+    const { correction, start, length } = item
 
-    if (correctionInRange) {
+    if (start > cursor) {
       elements.push(
-        <CorrectionHighlight key={`${index}-${showCorrected}`} word={word} correction={correctionInRange} index={index} />
-      )
-    } else {
-      elements.push(
-        <span key={`${index}-${showCorrected}`}>
-          {word}
-        </span>
+        <span key={`text-${index}-${showCorrected}-${cursor}`}>{text.slice(cursor, start)}</span>
       )
     }
 
-    currentPosition = wordEnd
+    const segment = text.slice(start, start + length)
+
+    elements.push(
+      <CorrectionHighlight
+        key={`correction-${index}-${showCorrected}-${start}`}
+        segment={segment}
+        correction={correction}
+      />
+    )
+
+    cursor = start + length
   })
 
+  if (cursor < text.length) {
+    elements.push(<span key={`text-tail-${showCorrected}-${cursor}`}>{text.slice(cursor)}</span>)
+  }
+
   return (
-    <div className="text-base md:text-xl lg:text-2xl leading-relaxed md:leading-loose tracking-wide">
+    <div className="text-base md:text-xl lg:text-2xl leading-relaxed md:leading-loose tracking-wide whitespace-pre-wrap">
       {elements}
     </div>
   )
 }
 
-function CorrectionHighlight({ word, correction, index }: { word: string; correction: Correction; index: number }) {
+function CorrectionHighlight({ segment, correction }: { segment: string; correction: Correction }) {
   const [isOpen, setIsOpen] = useState(false)
   const isMobile = useIsMobile()
 
@@ -165,7 +174,7 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
           className={`px-1.5 py-0.5 rounded-[var(--radius)] transition-all cursor-pointer ${getCorrectionColor(correction.type)}`}
           onClick={handleClick}
         >
-          {word}
+          {segment}
         </span>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-md rounded-[calc(var(--radius)*1.5)] p-0 gap-0">
@@ -187,7 +196,7 @@ function CorrectionHighlight({ word, correction, index }: { word: string; correc
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {word}
+          {segment}
         </span>
       </PopoverTrigger>
       <PopoverContent 
