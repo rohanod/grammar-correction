@@ -1,8 +1,8 @@
 import { CorrectionData, InlineFormatData, Correction, CorrectionType } from './types'
 
-function base64Decode(str: string): string {
+export function base64Decode(str: string): string {
   try {
-    return decodeURIComponent(atob(str).split('').map(c => 
+    return decodeURIComponent(atob(str).split('').map(c =>
       '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
     ).join(''))
   } catch {
@@ -10,26 +10,29 @@ function base64Decode(str: string): string {
   }
 }
 
-function base64Encode(str: string): string {
+export function base64Encode(str: string): string {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
     String.fromCharCode(parseInt(p1, 16))
   ))
 }
 
+function getViewerPath() {
+  return (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '/'
+}
+
 /**
  * Parse inline format text to CorrectionData
- * Format: {{original-corrected|type|reason}}
- * Example: "{{helo-Hello|spelling|Spelling error}} world"
+ * Format: {{original⋮corrected|type|reason}}
+ * Example: "{{helo⋮Hello|spelling|Spelling error}} world"
  */
 function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
   const text = inlineData.text
   const corrections: Correction[] = []
   let originalText = ''
   let correctedText = ''
-  let position = 0
   
-  // Regex to match {{original-corrected|type|reason}}
-  const correctionRegex = /\{\{([^|]*?)-([^|]*?)\|([^|]*?)(?:\|([^}]*?))?\}\}/g
+  // Regex to match {{original⋮corrected|type|reason}}
+  const correctionRegex = /\{\{([\s\S]*?)⋮([\s\S]*?)\|([^|}]*?)(?:\|([\s\S]*?))?\}\}/g
   
   let lastIndex = 0
   let match: RegExpExecArray | null
@@ -45,17 +48,19 @@ function parseInlineFormat(inlineData: InlineFormatData): CorrectionData {
     const type = match[3] as CorrectionType
     const reason = match[4] || undefined
     
-    // Position is where the correction starts in the original text
+    // Positions for both the original and corrected strings
     const correctionPosition = originalText.length
+    const correctedPosition = correctedText.length
     
     // Add correction to the list
-    corrections.push({
-      type,
-      original,
-      corrected,
-      position: correctionPosition,
-      reason
-    })
+      corrections.push({
+        type,
+        original,
+        corrected,
+        position: correctionPosition,
+        correctedPosition,
+        reason
+      })
     
     // Update texts
     originalText += original
@@ -108,16 +113,18 @@ export function parseCorrectionFromURL(): CorrectionData | null {
 export function generateCorrectionURL(data: CorrectionData): string {
   const encoded = base64Encode(JSON.stringify(data))
   const params = new URLSearchParams({ data: encoded })
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
+  const viewerPath = getViewerPath()
+  return `${window.location.origin}${viewerPath}?${params.toString()}`
 }
 
 export function generateExampleURL(): string {
   // Use the new inline format for LLM-friendly generation
   const inlineData: InlineFormatData = {
-    text: "{{helo-Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are-is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a-an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer-grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{-.|punctuation|Sentence should end with a period}}"
+    text: "{{helo⋮Hello|spelling|Spelling error - correct spelling is 'Hello'}} world! This {{are⋮is|grammar|Subject-verb agreement - singular 'This' requires 'is'}} {{a⋮an|grammar|Article correction - use 'an' before vowel sounds}} example of {{grammer⋮grammar|spelling|Spelling error - correct spelling is 'grammar'}} corrections{{⋮.|punctuation|Sentence should end with a period}}"
   }
-  
+
   const encoded = base64Encode(JSON.stringify(inlineData))
   const params = new URLSearchParams({ data: encoded })
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`
+  const viewerPath = getViewerPath()
+  return `${window.location.origin}${viewerPath}?${params.toString()}`
 }

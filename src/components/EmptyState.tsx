@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -37,33 +38,37 @@ export function EmptyState() {
               <AlertDescription className="text-xs md:text-sm leading-relaxed">
                 <div className="font-medium mb-2">How to use:</div>
                 <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Write your text with inline corrections using <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{{original-corrected|type|reason}}'}</code></li>
+                  <li>Write your text with inline corrections using <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{{original⋮corrected|type|reason}}'}</code></li>
                   <li>Wrap the resulting string in JSON: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{'{ "text": "..." }'}</code></li>
                   <li>Base64 encode the JSON and append it as <code className="bg-muted px-1.5 py-0.5 rounded text-xs">?data=&lt;base64&gt;</code></li>
                 </ol>
               </AlertDescription>
             </Alert>
 
-            <div className="flex flex-col gap-3 w-full">
-              <Button 
-                onClick={handleTryExample} 
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
-              >
-                Try Example
-                <ArrowRight size={20} weight="bold" className="ml-2" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+              <div className="flex flex-col gap-2 flex-1">
+                <Button
+                  onClick={handleTryExample}
+                  size="lg"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
+                >
+                  Try Example
+                  <ArrowRight size={20} weight="bold" className="ml-2" />
+                </Button>
+
+                <p className="text-xs text-muted-foreground">Click to see a sample correction in action</p>
+              </div>
+
+              <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
+                <Link to="/">Back to input</Link>
               </Button>
-              
-              <p className="text-xs text-muted-foreground">
-                Click to see a sample correction in action
-              </p>
             </div>
 
             <div className="mt-2 md:mt-4 p-3 md:p-4 bg-muted/30 rounded-lg w-full">
               <p className="text-xs font-medium text-foreground mb-2">Expected JSON structure:</p>
               <pre className="text-left text-[10px] md:text-xs text-muted-foreground overflow-x-auto">
 {`{
-  "text": "{{helo-Hello|spelling|Correct spelling}} world! This {{are-is|grammar}} example {{grammer-grammar|spelling}} corrections{{-.|punctuation}}"
+  "text": "{{helo⋮Hello|spelling|Correct spelling}} world! This {{are⋮is|grammar}} example {{grammer⋮grammar|spelling}} corrections{{⋮.|punctuation}}"
 }`}
               </pre>
               <p className="text-[10px] md:text-xs text-muted-foreground mt-2">
