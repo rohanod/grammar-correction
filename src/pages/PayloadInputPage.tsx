@@ -31,7 +31,7 @@ export function PayloadInputPage() {
 
       const encoded = base64Encode(JSON.stringify(parsed))
       const params = new URLSearchParams({ data: encoded })
-      navigate(`/docs?${params.toString()}`)
+      navigate(`/?${params.toString()}`)
       return
     } catch (jsonParseError) {
       try {
@@ -43,7 +43,7 @@ export function PayloadInputPage() {
 
         const encoded = base64Encode(JSON.stringify(parsed))
         const params = new URLSearchParams({ data: encoded })
-        navigate(`/docs?${params.toString()}`)
+        navigate(`/?${params.toString()}`)
         return
       } catch (base64Error) {
         const errorMessage =
@@ -60,7 +60,7 @@ export function PayloadInputPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-16 space-y-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-10 md:py-16 space-y-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,7 +68,7 @@ export function PayloadInputPage() {
         >
           <p className="text-sm font-medium text-primary uppercase tracking-[0.2em]">Payload Builder</p>
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">Input JSON or base64 to see corrections</h1>
-          <p className="text-muted-foreground text-base max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base max-w-3xl mx-auto leading-relaxed">
             Paste inline correction JSON to open the viewer, or drop in base64-encoded JSON and we will decode it for you.
           </p>
           <div className="flex items-center justify-center gap-3 text-sm">
@@ -85,25 +85,30 @@ export function PayloadInputPage() {
           transition={{ delay: 0.1 }}
           onSubmit={handleJsonSubmit}
         >
-          <Card className="p-6 h-full flex flex-col gap-5">
-            <div>
-              <h2 className="text-xl font-semibold">Payload</h2>
-              <p className="text-sm text-muted-foreground space-y-1">
+          <Card className="p-8 md:p-10 h-full flex flex-col gap-6 shadow-xl border-border/60">
+            <div className="flex flex-col gap-2 text-left">
+              <h2 className="text-2xl font-semibold tracking-tight">Payload</h2>
+              <p className="text-sm text-muted-foreground space-y-1 leading-relaxed">
                 <span className="block">Paste your inline correction JSON directly.</span>
                 <span className="block">Enter a base64 payload to decode and continue to the viewer.</span>
               </p>
             </div>
-            <div className="space-y-2 flex-1">
-              <Label htmlFor="json-payload">Payload</Label>
+            <div className="space-y-3 flex-1">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="json-payload" className="text-sm font-medium">Payload</Label>
+                <span className="text-xs text-muted-foreground">Supports JSON or base64-encoded JSON</span>
+              </div>
               <Textarea
                 id="json-payload"
-                className="min-h-[320px] md:min-h-[360px] font-mono text-sm"
+                className="min-h-[380px] md:min-h-[440px] font-mono text-sm md:text-base"
                 value={jsonInput}
                 onChange={(event) => setJsonInput(event.target.value)}
               />
               {jsonError && <p className="text-sm text-destructive">{jsonError}</p>}
             </div>
-            <Button type="submit" className="w-full md:w-1/3 md:self-end">View corrections</Button>
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
+              <Button type="submit" className="w-full sm:w-auto px-8">View corrections</Button>
+            </div>
           </Card>
         </motion.form>
       </div>

@@ -16,9 +16,8 @@ export function base64Encode(str: string): string {
   ))
 }
 
-function getDocsPath() {
-  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
-  return `${base}/docs`
+function getViewerPath() {
+  return (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '/'
 }
 
 /**
@@ -113,8 +112,8 @@ export function parseCorrectionFromURL(): CorrectionData | null {
 export function generateCorrectionURL(data: CorrectionData): string {
   const encoded = base64Encode(JSON.stringify(data))
   const params = new URLSearchParams({ data: encoded })
-  const docsPath = getDocsPath()
-  return `${window.location.origin}${docsPath}?${params.toString()}`
+  const viewerPath = getViewerPath()
+  return `${window.location.origin}${viewerPath}?${params.toString()}`
 }
 
 export function generateExampleURL(): string {
@@ -125,6 +124,6 @@ export function generateExampleURL(): string {
 
   const encoded = base64Encode(JSON.stringify(inlineData))
   const params = new URLSearchParams({ data: encoded })
-  const docsPath = getDocsPath()
-  return `${window.location.origin}${docsPath}?${params.toString()}`
+  const viewerPath = getViewerPath()
+  return `${window.location.origin}${viewerPath}?${params.toString()}`
 }
