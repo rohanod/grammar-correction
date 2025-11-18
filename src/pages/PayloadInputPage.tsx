@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -71,12 +71,6 @@ export function PayloadInputPage() {
           <p className="text-muted-foreground text-base max-w-3xl mx-auto leading-relaxed">
             Paste inline correction JSON to open the viewer, or drop in base64-encoded JSON and we will decode it for you.
           </p>
-          <div className="flex items-center justify-center gap-3 text-sm">
-            <span className="text-muted-foreground">Don't know how to use this?</span>
-            <Button variant="outline" asChild size="sm">
-              <Link to="/docs">Go to docs</Link>
-            </Button>
-          </div>
         </motion.div>
 
         <motion.form

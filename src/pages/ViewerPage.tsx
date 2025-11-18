@@ -9,7 +9,7 @@ import { CorrectionData } from '@/lib/types'
 import { parseCorrectionFromURL } from '@/lib/correction-parser'
 import { Button } from '@/components/ui/button'
 
-export function DocsPage() {
+export function ViewerPage() {
   const [correctionData] = useState<CorrectionData | null>(parseCorrectionFromURL())
   const [showCorrected, setShowCorrected] = useState(false)
 
