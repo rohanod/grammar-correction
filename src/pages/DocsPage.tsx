@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 import { TextWithHighlights } from '@/components/TextWithHighlights'
 import { Card } from '@/components/ui/card'
 import { EmptyState } from '@/components/EmptyState'
 import { CorrectionData } from '@/lib/types'
 import { parseCorrectionFromURL } from '@/lib/correction-parser'
+import { Button } from '@/components/ui/button'
 
 export function DocsPage() {
   const [correctionData] = useState<CorrectionData | null>(parseCorrectionFromURL())
@@ -59,6 +61,10 @@ export function DocsPage() {
                   }}
                 />
               </div>
+
+              <Button variant="outline" asChild className="flex-shrink-0">
+                <Link to="/">Back to input</Link>
+              </Button>
             </div>
           </div>
         </motion.div>

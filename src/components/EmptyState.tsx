@@ -45,21 +45,24 @@ export function EmptyState() {
               </AlertDescription>
             </Alert>
 
-          <div className="flex flex-col gap-3 w-full">
-            <Button
-              onClick={handleTryExample}
-              size="lg"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
-            >
-              Try Example
-              <ArrowRight size={20} weight="bold" className="ml-2" />
-            </Button>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+              <div className="flex flex-col gap-2 flex-1">
+                <Button
+                  onClick={handleTryExample}
+                  size="lg"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md rounded-lg"
+                >
+                  Try Example
+                  <ArrowRight size={20} weight="bold" className="ml-2" />
+                </Button>
 
-            <p className="text-xs text-muted-foreground">
-              Click to see a sample correction in action
-            </p>
+                <p className="text-xs text-muted-foreground">Click to see a sample correction in action</p>
+              </div>
 
-          </div>
+              <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
+                <Link to="/">Back to input</Link>
+              </Button>
+            </div>
 
             <div className="mt-2 md:mt-4 p-3 md:p-4 bg-muted/30 rounded-lg w-full">
               <p className="text-xs font-medium text-foreground mb-2">Expected JSON structure:</p>
