@@ -11,16 +11,11 @@ function RootRouter() {
   return hasData ? <DocsPage /> : <PayloadInputPage />
 }
 
-function DocsRedirect() {
-  const location = useLocation()
-  return <Navigate to={{ pathname: '/', search: location.search }} replace />
-}
-
 function App() {
   return (
     <Routes>
       <Route path="/" element={<RootRouter />} />
-      <Route path="/docs" element={<DocsRedirect />} />
+      <Route path="/docs" element={<DocsPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
