@@ -26,27 +26,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          run_install: false
-          version: 10
+          bun-version: latest
 
-      - name: Set up Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies with Bun
+        run: bun install --frozen-lockfile
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Build
-        run: pnpm run build
+        run: bun run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
